@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit game</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="container">
+    <h1>Edit Game:</h1>
+    <form th:action="@{/editgame(id=${id})}" th:object="${gameform}" method="POST">
+        <p>Title:<label><input type="text" th:field="*{title}"/></label></p>
+        <p>Author:<label><input type="text" th:field="*{author}"/></label></p>
+        <input class ="button-main-page" type="submit" value="Save" />
+    </form>
+    </div>
+    <div th:if="${errorMessage}" th:utext="${errorMessage}" style="color:red;font-style:italic;"></div>
+</body>
+</html>
