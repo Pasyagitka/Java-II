@@ -34,52 +34,45 @@ public class GameController {
 
     @GetMapping(value = {"/", "/index"})
     public ModelAndView index(Model model) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
         model.addAttribute("message", message);
         log.info("/index was called");
-        return modelAndView;
+        return new ModelAndView("index");
     }
     @GetMapping(value = {"/allgames"})
     public ModelAndView gameList(Model model) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("gamelist");
         model.addAttribute("games", games);
         log.info("/allgames was called");
-        return modelAndView;
+        return new ModelAndView("gamelist");
     }
 
     @GetMapping(value = {"/addgame"})
     public ModelAndView showAddGamePage(Model model) {
-        ModelAndView modelAndView = new ModelAndView("addgame");
         GameForm gameForm = new GameForm();
         model.addAttribute("gameform", gameForm);
         log.info("/addgame was called");
-        return modelAndView;
+        return new ModelAndView("addgame");
     }
 
     @PostMapping(value = {"/addgame"})
     public ModelAndView saveGame(Model model, @ModelAttribute("gameform") GameForm gameForm) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("gamelist");
         String title = gameForm.getTitle();
         String author = gameForm.getAuthor();
         if (title != null && title.length() > 0 && author != null && author.length() > 0) {
             Game newGame = new Game(++gameid, title, author);
             games.add(newGame);
-            model.addAttribute("games",games);
-            return modelAndView;
+            model.addAttribute("games", games);
+            return new ModelAndView("gamelist");
         }
+        log.info("Add game...");
         model.addAttribute("errorMessage", errorMessage);
-        modelAndView.setViewName("addgame");
-        return modelAndView;
+        return new ModelAndView("gamelist");
     }
 
     @GetMapping("/editgame")
-    public ModelAndView showEditPersonPage(Model model, @RequestParam  int id) {
-        Optional<Game> optionalPerson = games.stream().filter(a -> a.getId() == id).findFirst();
-        if (optionalPerson.isPresent()) {
-            Game gameToEdit = optionalPerson.get();
+    public ModelAndView showEditGamePage(Model model, @RequestParam int id) {
+        Optional<Game> optionalGame = games.stream().filter(a -> a.getId() == id).findFirst();
+        if (optionalGame.isPresent()) {
+            Game gameToEdit = optionalGame.get();
             model.addAttribute("id", gameToEdit.getId());
             model.addAttribute("gameform", new GameForm(gameToEdit.getTitle(), gameToEdit.getAuthor()));
             log.info("Editing game page opens...");
@@ -88,13 +81,12 @@ public class GameController {
     }
 
     @PostMapping("/editgame")
-    public ModelAndView saveEditedPerson(Model model, @ModelAttribute("person_form") GameForm gameForm, @RequestParam int id) {
+    public ModelAndView saveEditedPerson(Model model, @ModelAttribute("gameform") GameForm gameForm, @RequestParam int id) {
         ModelAndView modelAndView = new ModelAndView("editgame");
         String newTitle = gameForm.getTitle();
         String newAuthor = gameForm.getAuthor();
 
         if (newTitle != null && newTitle.length() > 0 && newAuthor != null && newAuthor.length() > 0) {
-            modelAndView.setViewName("gamelist");
             Optional<Game> optionalGame = games.stream().filter(a -> a.getId() == id).findFirst();
             if (optionalGame.isPresent()) {
                 Game gameToEdit = optionalGame.get();
@@ -103,6 +95,7 @@ public class GameController {
             }
             model.addAttribute("games", games);
             log.info("Edit game #" + id);
+            modelAndView.setViewName("gamelist");
             return modelAndView;
         }
         model.addAttribute("errorMessage", errorMessage);
