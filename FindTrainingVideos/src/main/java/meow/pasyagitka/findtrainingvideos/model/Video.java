@@ -1,24 +1,32 @@
 package meow.pasyagitka.findtrainingvideos.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "Videos")
 @Data
 public class Video {
-    //todo только один тип связей
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column
+    @NotEmpty(message = "Title cannot be null")
+    @Size(max=30, message = "Title cannot be longer than 30 characters")
     private String title;
 
     @Column
+    @NotEmpty(message = "Theme cannot be null")
+    @Size(max=30, message = "Theme cannot be longer than 30 characters")
     private String theme;
 
     @ManyToOne
@@ -26,78 +34,19 @@ public class Video {
     private Discipline disciplineEntity;
 
     @Column
+    @NotEmpty(message = "Author cannot be null")
+    @Size(max=30, message = "Author cannot be longer than 30 characters")
     private String author;
 
     @Column
     private Date date;
 
     @Column
+    @Size(max=30, message = "URL cannot be longer than 74 characters")
+    @NotEmpty(message = "Video url cannot be null")
     private String url;
 
     @Column
+    @Size(max=30, message = "Description cannot be longer than 250 characters")
     private String description;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public Discipline getDisciplineEntity() {
-        return disciplineEntity;
-    }
-
-    public void setDisciplineEntity(Discipline disciplineEntity) {
-        this.disciplineEntity = disciplineEntity;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

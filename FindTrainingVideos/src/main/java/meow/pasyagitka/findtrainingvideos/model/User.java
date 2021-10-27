@@ -6,11 +6,10 @@ import lombok.Setter;
 import meow.pasyagitka.findtrainingvideos.validator.Password;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/*@Getter
-@Setter*/
+@Getter
+@Setter
 @Entity
 @Table(name = "Users")
 @Data
@@ -30,36 +29,4 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role roleEntity;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRoleEntity() {
-        return roleEntity;
-    }
-
-    public void setRoleEntity(Role roleEntity) {
-        this.roleEntity = roleEntity;
-    }
 }
