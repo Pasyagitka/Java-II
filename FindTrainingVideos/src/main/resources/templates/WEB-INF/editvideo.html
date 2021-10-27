@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit - Training Videos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-4 container">
+            <h3 style="padding: 10px;">Edit existing video</h3>
+            <form th:object="${video}" th:action="@{/editvideo}" method="POST"  class="col rounded bg-light" style=" padding: 10px;">
+                <div class="form-group">
+                    <label for="videotitle">Title</label>
+                    <input type="text" name="videotitle" id="videotitle" class="form-control" th:field="*{title}">
+                    <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">title Error</div>
+                </div>
+                <div class="form-group">
+                    <label for="videotheme">Theme</label>
+                    <input type="text" name="videotheme" id="videotheme" class="form-control" th:field="*{theme}">
+                    <div style="color:red" th:if="${#fields.hasErrors('theme')}" th:errors="*{theme}">theme Error</div>
+                </div>
+                <div class="form-group">
+                    <label for="videoauthor">Author</label>
+                    <input type="text" name="videoauthor" id="videoauthor" class="form-control" th:field="*{author}">
+                    <div style="color:red" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">author Error</div>
+                </div>
+                <div class="form-group">
+                    <label for="videourl">URL</label>
+                    <input type="text" name="videourl" id="videourl" class="form-control" th:field="*{url}">
+                    <div style="color:red" th:if="${#fields.hasErrors('url')}" th:errors="*{url}">url Error</div>
+                </div>
+                <div class="form-group">
+                    <label for="videodescription">Description</label>
+                    <input type="text" name="videodescription" id="videodescription" class="form-control" th:field="*{description}">
+                    <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">url Error</div>
+                </div>
+                <input type="submit" value="Add" class="btn btn-success"/>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
