@@ -1,12 +1,21 @@
 package meow.pasyagitka.findtrainingvideos.service;
 
+import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
+import meow.pasyagitka.findtrainingvideos.model.Role;
+import meow.pasyagitka.findtrainingvideos.model.User;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.repository.VideoRepository;
+import meow.pasyagitka.findtrainingvideos.utils.Mapping;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static meow.pasyagitka.findtrainingvideos.utils.Mapper.*;
 
 @Service
 @Transactional
@@ -15,17 +24,18 @@ public class VideoService {
     @Autowired
     VideoRepository repo;
 
-    public void save(Video video) {
-        repo.save(video);
+    public void save(VideoDto video) {
+        repo.save(map(video, Video.class));
     }
 
-    public List<Video> listAll() {
-        return (List<Video>) repo.findAll();
+    public List<VideoDto> listAll() {
+        return mapAll((List<Video>)repo.findAll(), VideoDto.class);
     }
 
-    public Video get(int id) {
-        return repo.findById(id).get();
+    public VideoDto get(int id) {
+        return map(repo.findById(id).get(), VideoDto.class);
     }
+    //todo convert entity to dto
 
     public void delete(int id) {
         repo.deleteById(id);
