@@ -1,5 +1,6 @@
 package meow.pasyagitka.findtrainingvideos.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import meow.pasyagitka.findtrainingvideos.model.Discipline;
@@ -9,8 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class VideoDto {
     private int id;
 
