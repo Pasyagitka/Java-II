@@ -22,25 +22,17 @@ public class UserController {
     @Autowired
     private VideoService videoService;
 
-    @GetMapping("/signin")
-    public String getSignIn(@ModelAttribute("user") UserDto user) {
-        return "signin";
-    }
 
-    @GetMapping("/signup")
-    public String getSignUp(@ModelAttribute("user") UserDto user) {
-        return "signup";
-    }
 
-    @GetMapping(value = {"/usermain"})
+    /*@GetMapping(value = {"/usermain"})
     public ModelAndView initUserMain(Model model) {
         ModelAndView mav = new ModelAndView("usermain");
         mav.addObject("videoList", videoService.listAll());
         return mav;
-    }
+    }*/
 
 
-    @PostMapping("/signin")
+  /*  @PostMapping("/signin")
     public String postSignIn(@ModelAttribute("user") @Valid UserDto user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "signin";
@@ -54,6 +46,6 @@ public class UserController {
             return "signup";
         }
         return "redirect:/";
-    }
+    }*/
 
 }

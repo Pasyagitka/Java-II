@@ -1,10 +1,12 @@
 package meow.pasyagitka.findtrainingvideos.dto;
 
+import lombok.Data;
 import meow.pasyagitka.findtrainingvideos.model.Role;
 import meow.pasyagitka.findtrainingvideos.validator.Password;
 
 import javax.validation.constraints.Size;
 
+@Data
 public class UserDto {
     private Integer id;
 

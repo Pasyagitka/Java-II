@@ -5,12 +5,29 @@
     <title>Edit - Training Videos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
+<!--<script>
+    handleClick()
+    {
+        alert('!');
+        fetch('http://localhost:8080/adminmain/getVideoList', {
+            method: 'PUT',
+            body: {
+
+
+            }
+        })
+    }
+</script>-->
 <body>
 <div class="container">
     <div class="row">
         <div class="col-4 container">
             <h3 style="padding: 10px;">Edit existing video</h3>
-            <form th:object="${video}" th:action="@{/editvideo}" method="POST"  class="col rounded bg-light" style=" padding: 10px;">
+            <form th:object="${video}" th:action="@{/adminmain/editvideo}" method="post" class="col rounded bg-light" style=" padding: 10px;">
+                <div class="form-group">
+                    <label for="videoid">Id</label>
+                    <input type="text" name="videotitle" id="videoid" class="form-control" th:field="*{id}">
+                </div>
                 <div class="form-group">
                     <label for="videotitle">Title</label>
                     <input type="text" name="videotitle" id="videotitle" class="form-control" th:field="*{title}">
