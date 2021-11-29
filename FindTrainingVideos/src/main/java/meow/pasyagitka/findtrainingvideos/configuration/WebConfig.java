@@ -45,16 +45,14 @@ public class WebConfig implements WebMvcConfigurer {
     //validation
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new
-                ReloadableResourceBundleMessageSource();
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:validation");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
     @Bean
     public LocalValidatorFactoryBean validator() {
-        LocalValidatorFactoryBean bean = new
-                LocalValidatorFactoryBean();
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
     }

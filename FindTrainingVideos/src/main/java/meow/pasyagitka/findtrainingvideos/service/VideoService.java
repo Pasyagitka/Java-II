@@ -1,21 +1,18 @@
 package meow.pasyagitka.findtrainingvideos.service;
 
+import io.swagger.v3.oas.annotations.Operation;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
-import meow.pasyagitka.findtrainingvideos.model.Role;
-import meow.pasyagitka.findtrainingvideos.model.User;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.repository.VideoRepository;
-import meow.pasyagitka.findtrainingvideos.utils.Mapping;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Optional;
 
 import static meow.pasyagitka.findtrainingvideos.utils.Mapper.*;
+import static meow.pasyagitka.findtrainingvideos.utils.Mapper.map;
 
 @Service
 @Transactional
@@ -24,8 +21,9 @@ public class VideoService {
     @Autowired
     VideoRepository repo;
 
-    public void save(VideoDto video) {
-        repo.save(map(video, Video.class));
+    public VideoDto save(VideoDto video) {
+        Video v = repo.save(map(video, Video.class));
+        return map(v, VideoDto.class);
     }
 
     public List<VideoDto> listAll() {
@@ -33,9 +31,10 @@ public class VideoService {
     }
 
     public VideoDto get(int id) {
-        return map(repo.findById(id).get(), VideoDto.class);
-    }
-    //todo convert entity to dto
+        Optional<Video> optionalVideoDto = repo.findById(id);
+        return optionalVideoDto.map(video -> map(video, VideoDto.class)).orElse(null);
+    }//if present return object, otherwise null
+
 
     public void delete(int id) {
         repo.deleteById(id);
