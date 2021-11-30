@@ -36,12 +36,12 @@ public class AdminController {
     @Autowired
     private VideoService videoService;
 
-    @GetMapping("/adminmain")
+  /*  @GetMapping("/adminmain")
     public ModelAndView welcome() {
         ModelAndView modelAndView = new ModelAndView("adminmain.html");
         modelAndView.addObject("newVideo", new VideoDto());
         return modelAndView;
-    }
+    }*/
 
 
     @GetMapping("/adminmain/editvideo/{id}")

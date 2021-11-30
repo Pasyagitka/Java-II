@@ -12,8 +12,11 @@
             <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
             Training Videos
         </a>
-        <a><h4>Hello, USER</h4></a>
-        <input type="button" class="btn btn-outline-light" value="Sign Out"/>
+        <h4 th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]]!</h4>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+        <!--<input type="button" class="btn btn-outline-light" value="Sign Out"/>-->
     </nav>
     <div class="row">
 

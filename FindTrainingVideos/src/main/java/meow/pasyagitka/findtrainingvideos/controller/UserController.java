@@ -36,12 +36,12 @@ public class UserController {
     @Autowired
     private VideoRepository videoRepository;
 
-    @GetMapping("/usermain")
+    /*@GetMapping("/usermain")
     public ModelAndView welcome() {
         ModelAndView modelAndView = new ModelAndView("adminmain.html");
         modelAndView.addObject("newVideo", new VideoDto());
         return modelAndView;
-    }
+    }*/
 
     /*@Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
@@ -65,10 +65,10 @@ public class UserController {
     }*/
 
 
-  /*  @PostMapping("/signin")
-    public String postSignIn(@ModelAttribute("user") @Valid UserDto user, BindingResult bindingResult) {
+  /*  @PostMapping("/login")
+    public String postlogin(@ModelAttribute("user") @Valid UserDto user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "signin";
+            return "login";
         }
         return "redirect:/";
     }

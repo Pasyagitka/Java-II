@@ -70,13 +70,13 @@ public class PageController {
         return "page";
     }
 
-    /*@GetMapping("/signin")
-    public String showSignInForm(@ModelAttribute("user") UserDto user) {
-        return "signin";
+    /*@GetMapping("/login")
+    public String showloginForm(@ModelAttribute("user") UserDto user) {
+        return "login";
     }
-    @PostMapping("/signin")
-    public String postSignIn(@ModelAttribute("user") @Valid UserDto user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) return "signin";
+    @PostMapping("/login")
+    public String postlogin(@ModelAttribute("user") @Valid UserDto user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) return "login";
         return "redirect:/";
     }
 
