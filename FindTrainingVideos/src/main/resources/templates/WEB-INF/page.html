@@ -4,6 +4,14 @@
   <meta charset="ISO-8859-1">
   <title>Employee Management System</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <script>
+
+    function addFilter(){
+      let key = document.getElementById("key-search-input").value;
+      let value = document.getElementById("value-search-input").value;
+      fetch(`http://localhost:8080/page/1?sortField=theme&sortDir=asc&key=${key}&value=${value}`)
+    }
+  </script>
 </head>
 <body>
 <div class="container">
@@ -13,6 +21,24 @@
       Training Videos - Admin
     </a>
   </nav>
+  <div class="col container" style="margin: 10px;">
+    <div class="row">
+      <div class="col-10">
+          <input type="text" th:value="${key}" id="key-search-input" placeholder="Criteria" class="form-control"></br>
+          <input type="text" th:value="${value}" id="value-search-input" placeholder="Value" class="form-control">
+      </div>
+      <div class="col-1">
+        <div>
+          <a id="a-apply-filter">Apply filter</a>
+<!--
+          <a th:href="@{'/page/1?sortField=theme&sortDir=asc&key=' + ${key} +'&value=' + ${value}}">Apply filter</a>
+-->
+        </div>
+        <button type="button" class="btn btn-outline-success" id="apply-filter-button" onclick="addFilter()" value="Apply filter"/>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="container my-2 ">
       <h1>List</h1>
@@ -40,17 +66,17 @@
           </div>
           <div class = "col-sm-1">
                         <span th:each="i: ${#numbers.sequence(1, totalPages)}">
-                            <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+                            <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+ '&key=' + ${key} +'&value=' + ${value}}">[[${i}]]</a>
                             <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
                         </span>
           </div>
           <div class = "col-sm-1">
-            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+ '&key=' + ${key} +'&value=' + ${value}}">Next</a>
             <span th:unless="${currentPage < totalPages}">Next</span>
           </div>
 
           <div class="col-sm-1">
-            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+            <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}+ '&key=' + ${key} +'&value=' + ${value}}">Last</a>
             <span th:unless="${currentPage < totalPages}">Last</span>
           </div>
         </div>

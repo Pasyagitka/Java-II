@@ -1,10 +1,12 @@
 package meow.pasyagitka.findtrainingvideos.controller.advice;
 
+import meow.pasyagitka.findtrainingvideos.dto.SearchDto;
 import meow.pasyagitka.findtrainingvideos.dto.UserDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
 import meow.pasyagitka.findtrainingvideos.model.User;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
+import meow.pasyagitka.findtrainingvideos.specification.VideoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class PageController {
@@ -23,9 +26,10 @@ public class PageController {
 
     @GetMapping("/page")
     public String viewHomePage(Model model) {
-        return findPaginated(1, "title", "asc", model);
+        return findPaginatedCriteria(1, "title", "asc", "", "", model);
     }
-    @GetMapping("/page/{pageNo}")
+
+    /*@GetMapping("/page/{pageNo}")
     public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
                                 @RequestParam("sortField") String sortField,
                                 @RequestParam("sortDir") String sortDir,
@@ -33,6 +37,28 @@ public class PageController {
         int pageSize = 5;
 
         Page<Video> page = videoService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<Video> listEmployees = page.getContent();
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        model.addAttribute("listEmployees", listEmployees);
+        return "page";
+    }*/
+
+    @GetMapping("/page/{pageNo}")
+    public String findPaginatedCriteria(@PathVariable(value = "pageNo") int pageNo,
+                                @RequestParam("sortField") String sortField,
+                                @RequestParam("sortDir") String sortDir,
+                                        @ModelAttribute("key") String searchKey,
+                                        @ModelAttribute("value") String searchValue,
+                                Model model) {
+        int pageSize = 5;
+        VideoSpecification spec = Objects.equals(searchKey, "") ? null :
+             new VideoSpecification(new SearchDto(searchKey, ":", searchValue));
+        Page<Video> page = videoService.findPaginatedCriteria(pageNo, pageSize, sortField, sortDir, spec);
         List<Video> listEmployees = page.getContent();
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
