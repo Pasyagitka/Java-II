@@ -1,6 +1,5 @@
-package meow.pasyagitka.findtrainingvideos.security;
+package meow.pasyagitka.findtrainingvideos.dto;
 
-import meow.pasyagitka.findtrainingvideos.dto.UserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +14,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    //конвертирует моего пользователя из базы данных в объект CustomUserDetails.
+    //конвертирует пользователя из базы данных в объект CustomUserDetails.
     public static CustomUserDetails fromUserEntityToCustomUserDetails(UserDto userEntity) {
         CustomUserDetails c = new CustomUserDetails();
         c.login = userEntity.getLogin();

@@ -4,7 +4,7 @@
     <title>Sign In to Training Videos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
-<body>
+<!--<body>
 <div th:if="${param.error}">
     Invalid username and password.
 </div>
@@ -16,14 +16,16 @@
     <div><label> Password: <input type="password" name="password"/> </label></div>
     <div><input type="submit" value="Sign In"/></div>
 </form>
-</body>
-<!--<body>
+</body>-->
+<body>
 <br/>
 <div class="container" style="padding: 10px;">
     <div class="row">
         <div class="col-4 container bg-light rounded" >
             <h1>Sign In</h1>
             <div class="form-group">
+                <div th:if="${param.error}">Invalid username and password.</div>
+                <div th:if="${param.logout}">You have been logged out.</div>
                 <form th:object="${user}" th:action="@{/login}" method="POST">
                     <div class="form-group">
                         <label for="login">Login</label>
@@ -42,5 +44,5 @@
         </div>
     </div>
 </div>
-</body>-->
+</body>
 </html>

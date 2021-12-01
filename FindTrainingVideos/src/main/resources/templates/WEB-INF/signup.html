@@ -10,7 +10,7 @@
 <div class="container col-4 bg-light rounded" style="padding: 10px;">
     <h1>Sign Up</h1>
     <div class="form-group" style="margin: 10px;">
-        <form th:object="${user}" th:action="@{/signup}" method="POST">
+        <form th:object="${user}" th:action="@{/register}" method="POST">
             <div class="form-group">
                 <label for="login">Login</label>
                 <input type="text" name="login" id="login" class="form-control" th:field="*{login}">

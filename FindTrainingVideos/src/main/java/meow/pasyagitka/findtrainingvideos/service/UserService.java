@@ -5,7 +5,10 @@ import meow.pasyagitka.findtrainingvideos.model.Role;
 import meow.pasyagitka.findtrainingvideos.model.User;
 import meow.pasyagitka.findtrainingvideos.repository.RoleRepository;
 import meow.pasyagitka.findtrainingvideos.repository.UserRepository;
+import meow.pasyagitka.findtrainingvideos.dto.CustomUserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService{
     @Autowired
     UserRepository userRepository;
 
@@ -67,5 +70,11 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDto userEntity = this.findByLogin(username);
+        return CustomUserDetails.fromUserEntityToCustomUserDetails(userEntity);
     }
 }

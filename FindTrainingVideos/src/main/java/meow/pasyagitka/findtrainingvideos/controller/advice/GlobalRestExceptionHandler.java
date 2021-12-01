@@ -1,15 +1,9 @@
 package meow.pasyagitka.findtrainingvideos.controller.advice;
 
-import meow.pasyagitka.findtrainingvideos.exceptions.AddVideoException;
-import meow.pasyagitka.findtrainingvideos.exceptions.VideoNotFoundException;
+import meow.pasyagitka.findtrainingvideos.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
-import org.springframework.security.web.csrf.InvalidCsrfTokenException;
-import org.springframework.security.web.csrf.MissingCsrfTokenException;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,12 +11,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @RestControllerAdvice
 public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Response> handleCannotAddVideoException(UserNotFoundException e) {
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler(VideoNotFoundException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -33,6 +29,18 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AddVideoException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Response> handleCannotAddVideoException(AddVideoException e) {
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EditVideoException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Response> handleCannotEditVideoException(EditVideoException e) {
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DeleteVideoException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Response> handleCannotDeleteVideoException(DeleteVideoException e) {
         return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
