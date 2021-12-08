@@ -9,15 +9,21 @@ import meow.pasyagitka.findtrainingvideos.security.JwtProvider;
 import meow.pasyagitka.findtrainingvideos.service.RoleService;
 import meow.pasyagitka.findtrainingvideos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.validation.Valid;
 
 @RestController
 public class AuthController {
+    public static final String AUTHORIZATION = "Authorization";
+
     @Autowired
     private UserService userService;
 
@@ -45,7 +51,7 @@ public class AuthController {
         return modelAndView;
     }
 
-    @PostMapping("/register")
+    @PostMapping(value="/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<String> registerUser(@Valid UserDto registrationRequest) {
         User u = new User();
         u.setPassword(registrationRequest.getPassword());
@@ -54,19 +60,22 @@ public class AuthController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @GetMapping("/login")
+    @GetMapping(value="/login")
     public ModelAndView openLogin() {
         ModelAndView modelAndView = new ModelAndView("login.html");
+        modelAndView.addObject("token", "");
         modelAndView.addObject("user", new UserDto());
         return modelAndView;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value="/login", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<String> auth(UserDto user) throws UserNotFoundException {
         try {
             UserDto userEntity = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
             String token = jwtProvider.generateToken(userEntity.getLogin());
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(AUTHORIZATION, "Bearer " + token);
+            return new ResponseEntity<>(token, headers, HttpStatus.OK);
         }
         catch (Exception e){
             throw new UserNotFoundException("/login");

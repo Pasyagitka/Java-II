@@ -1,4 +1,4 @@
-package meow.pasyagitka.findtrainingvideos.controller.advice;
+package meow.pasyagitka.findtrainingvideos.controller;
 
 import meow.pasyagitka.findtrainingvideos.dto.SearchDto;
 import meow.pasyagitka.findtrainingvideos.model.Video;

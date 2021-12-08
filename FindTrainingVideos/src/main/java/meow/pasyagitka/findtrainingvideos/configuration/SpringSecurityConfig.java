@@ -33,6 +33,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 //авторизировать пользователя по токену, не нужно создавать и хранить для него сессию. Поэтому я указал STATELESS.
                 .and()
+                .formLogin()
+                .loginPage("/login.html")
+                .and()
                 .authorizeRequests()
                 .antMatchers("/adminmain/*", "/adminmain").hasRole("ADMIN") // какие будут доступны для определенной роли, а какие нет.
                 .antMatchers("/usermain/*", "/usermain").hasRole("USER")

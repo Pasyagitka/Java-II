@@ -18,6 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
     public ClassLoaderTemplateResolver templateResolver() {
         var templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setPrefix("templates/WEB-INF/");
+        //templateResolver.setPrefix("templates/WEB-INF/");
+        //templateResolver.setPrefix("static/");
+
         templateResolver.setCacheable(false);
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML5");
