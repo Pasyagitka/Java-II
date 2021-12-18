@@ -31,32 +31,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //авторизировать пользователя по токену, не нужно создавать и хранить для него сессию. Поэтому я указал STATELESS.
-                .and()
-                .formLogin()
-                .loginPage("/login.html")
+                //авторизировать пользователя по токену, не нужно создавать и хранить для него сессию.
+                //.and()
+                //.formLogin()
+                //.loginPage("/login.html")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/adminmain/*", "/adminmain").hasRole("ADMIN") // какие будут доступны для определенной роли, а какие нет.
-                .antMatchers("/usermain/*", "/usermain").hasRole("USER")
-                .antMatchers("/register", "/login").permitAll() //адреса register и auth будут доступны всем независимо от роли и авторизации.
+                .antMatchers("/adminmain/*").hasRole("ADMIN")
+                .antMatchers("/usermain/*").hasRole("USER")
+                .antMatchers("/register", "/login").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
                 //будет срабатывать при каждом запросе - чтобы спринг как-то увидел пользователя в системе
-
-                /*.authorizeRequests()
-                .antMatchers("/").permitAll()// configured to not require any authentication.
-                //All other paths must be authenticated.
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                //When a user successfully logs in, they are redirected to the previously requested page that required authentication.
-                //There is a custom /login page (which is specified by loginPage()), and everyone is allowed to view it.
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();*/
     }
 
     @Bean

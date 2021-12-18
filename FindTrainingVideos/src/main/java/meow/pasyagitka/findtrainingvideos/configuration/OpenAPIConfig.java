@@ -23,8 +23,8 @@ public class OpenAPIConfig {
     public OpenAPI customOpenApi() {
         return new OpenAPI().info(new Info().title("Training Videos")
                         .contact(new Contact().name("pasyagitka")
-                                .email("lizavetazinovich@gmail.com")))
-                .servers(List.of(new Server().url("http://localhost:8080")
-                                .description("Dev service")));
+                        .email("lizavetazinovich@gmail.com")))
+                        .servers(List.of(new Server().url("http://localhost:8080")
+                        .description("Dev service")));
     }
 }

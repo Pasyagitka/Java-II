@@ -22,23 +22,24 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.util.List;
 
+@RequestMapping(value = "/adminmain")
 @RestController
 public class AdminController {
     @Autowired
     private VideoService videoService;
 
-    @GetMapping("/adminmain/editvideo/{id}")
+    /*@GetMapping("/adminmain/editvideo/{id}")
     public ModelAndView openedit(@PathVariable("id") int id) {
         ModelAndView modelAndView = new ModelAndView("editvideo.html");
         modelAndView.addObject("video", videoService.get(id));
         return modelAndView;
-    }
+    }*/
 
     @Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
-    @GetMapping(value = {"/adminmain/getVideoList"})
+    @GetMapping(value = {"/getVideoList"})
     public ResponseEntity<List<VideoDto>> getVideos() {
         try {
             return new ResponseEntity<>(videoService.listAll(), HttpStatus.OK);
@@ -51,7 +52,7 @@ public class AdminController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "New video is created", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while creating a new video", content = @Content)})
-    @PostMapping("/adminmain/addvideo")
+    @PostMapping("/addvideo")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VideoDto> saveVideo(
             @Parameter(description = "New video object")
@@ -70,7 +71,7 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "The video is edited", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "404", description = "Video not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error while editing a video", content = @Content)})
-    @PutMapping(value = "/adminmain/editvideo/{id}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PutMapping(value = "/editvideo/{id}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<VideoDto> updateVideo(@PathVariable("id") int id, @Valid VideoDto newVideoData) throws EditVideoException {
         try {
             VideoDto videoData = videoService.get(newVideoData.getId());
@@ -95,7 +96,7 @@ public class AdminController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Video is deleted", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while deleting a video", content = @Content)})
-    @DeleteMapping("/adminmain/deletevideo/{id}")
+    @DeleteMapping("/deletevideo/{id}")
     public ResponseEntity<HttpStatus> deleteVideo(@Parameter(description = "id of video to be deleted") @PathVariable("id") int id) throws DeleteVideoException {
         try {
             videoService.delete(id);

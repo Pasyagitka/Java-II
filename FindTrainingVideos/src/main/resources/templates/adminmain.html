@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Training Videos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            console.log()
+            fetch('/adminmain/getVideoList', {headers: {
+                    'Authorization': `${localStorage.getItem('token')}`,
+                }})
+                .then((response) => { return response.json();})
+                .then(pdata => {
+                    let tr = '';
+                    console.log(pdata);
+                    pdata.forEach(function (value) {
+                        console.log(value);
+                        tr += `<tr>
+                                   <td>${value.title}</td>
+                                   <td>${value.theme}</td>
+                                   <td>${value.author}</td>
+                                   <td>${value.date}</td>
+                                   <td>${value.url}</td>
+                                   <td>${value.description}</td>
+                                   <td><a href="/adminmain/editvideo/${value.id}"><img src="https://img.icons8.com/ios/50/000000/edit--v1.png" width="20"/></a></td>
+                                   <td><a href="/adminmain/deletevideo/${value.id}"><img src="https://img.icons8.com/windows/32/000000/delete-sign.png" width="20"/></a></td>
+                               </tr>`;
+                    });
+                    document.querySelector('#table_id tbody:nth-child(2)').innerHTML = tr; //Append the data
+                }).catch(error => {console.log(error);
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-light bg-success justify-content-between" style="margin: 10px;">
+        <a class="navbar-brand text-light" href="#">
+            <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            Training Videos - Admin
+        </a>
+    </nav>
+    <div class="row">
+        <div class="col-4 container">
+            <h3 style="padding: 10px;">Add a video</h3>
+            <div class="col rounded bg-light" style=" padding: 10px;">
+                <div class="form-group">
+                    <label for="videotitle">Title</label>
+                    <input type="text" name="videotitle" id="videotitle" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="videotheme">Theme</label>
+                    <input type="text" name="videotheme" id="videotheme" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="videoauthor">Author</label>
+                    <input type="text" name="videoauthor" id="videoauthor" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="videourl">URL</label>
+                    <input type="text" name="videourl" id="videourl" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="videodescription">Description</label>
+                    <input type="text" name="videodescription" id="videodescription" class="form-control">
+                </div>
+                <input type="submit" value="Add" class="btn btn-success" onclick="addVideo()"/>
+            </div>
+        </div>
+        <div class="col container" width="600">
+            <h3 style="padding: 10px;">List</h3>
+            <table class="table" id="table_id">
+                <tbody>
+                <tr class="bg-light">
+                    <th>Title</th>
+                    <th>Theme</th>
+                    <!--  <th>Discipline</th>-->
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>URL</th>
+                    <th>Description</th>
+                    <th>edit</th>
+                    <th>delete</th>
+                </tr>
+                </tbody>
+                <tbody/>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    async function addVideo() {
+        let videotitle = document.getElementById("videotitle").value;
+        let password = document.getElementById("password").value;
+        let response = await fetch("/login",
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    login: login,
+                    password: password
+                })
+            });
+
+        if (response.status === 200) {
+            localStorage.setItem("token", response.headers.get("Authorization"));
+            if (login === "pasyagitka") {
+                console.log('adminmain');
+                document.location.href = "/adminmain";
+                /*  var req = new XMLHttpRequest();
+                  req.open('GET', '/adminmain', true); //true means request will be async
+                  req.onreadystatechange = function (aEvt) {
+                    if (req.readyState == 4) {
+                      if(req.status == 200) {
+                        document.write(req.responseText);
+                      }
+                      else
+                      alert("Error loading page\n");
+                    }
+                  };
+                  req.setRequestHeader('Authorization', response.headers.get("Authorization"));
+                  req.send();*/
+            } else {
+                console.log('usermain');
+                document.location.href = "/usermain";
+            }
+        } else {
+            document.querySelector("#result").style.color = "#e74c3c";
+            document.querySelector("#result").innerHTML = data.error;
+        }
+    }
+</script>
+</body>
+</html>

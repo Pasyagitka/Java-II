@@ -1,5 +1,6 @@
 package meow.pasyagitka.findtrainingvideos.controller;
 
+import meow.pasyagitka.findtrainingvideos.dto.UserAuthDto;
 import meow.pasyagitka.findtrainingvideos.dto.UserDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
 import meow.pasyagitka.findtrainingvideos.exceptions.DeleteVideoException;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -30,7 +33,7 @@ public class AuthController {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @GetMapping("/adminmain")
+ /*   @GetMapping("/adminmain")
     public ModelAndView welcomeAdmin() {
         ModelAndView modelAndView = new ModelAndView("adminmain.html");
         modelAndView.addObject("newVideo", new VideoDto());
@@ -43,15 +46,15 @@ public class AuthController {
         modelAndView.addObject("newVideo", new VideoDto());
         return modelAndView;
     }
-
-    @GetMapping("/register")
+*/
+   /* @GetMapping("/register")
     public ModelAndView openRegister() {
         ModelAndView modelAndView = new ModelAndView("signup.html");
         modelAndView.addObject("user", new UserDto());
         return modelAndView;
-    }
+    }*/
 
-    @PostMapping(value="/register", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @PostMapping(value="/register") // consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}
     public ResponseEntity<String> registerUser(@Valid UserDto registrationRequest) {
         User u = new User();
         u.setPassword(registrationRequest.getPassword());
@@ -60,16 +63,16 @@ public class AuthController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @GetMapping(value="/login")
+   /* @GetMapping(value="/login")
     public ModelAndView openLogin() {
         ModelAndView modelAndView = new ModelAndView("login.html");
         modelAndView.addObject("token", "");
         modelAndView.addObject("user", new UserDto());
         return modelAndView;
-    }
+    }*/
 
-    @PostMapping(value="/login", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<String> auth(UserDto user) throws UserNotFoundException {
+    @PostMapping(value="/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> auth(@RequestBody @Valid UserAuthDto user) throws UserNotFoundException {
         try {
             UserDto userEntity = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
             String token = jwtProvider.generateToken(userEntity.getLogin());
@@ -78,7 +81,7 @@ public class AuthController {
             return new ResponseEntity<>(token, headers, HttpStatus.OK);
         }
         catch (Exception e){
-            throw new UserNotFoundException("/login");
+            throw new UserNotFoundException("/login: user not found");
         }
     }
 
