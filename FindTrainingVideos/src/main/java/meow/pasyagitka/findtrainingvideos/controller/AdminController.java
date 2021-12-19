@@ -81,15 +81,17 @@ public class AdminController {
             @ApiResponse(responseCode = "200", description = "The video is edited", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "404", description = "Video not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error while editing a video", content = @Content)})
-    @PutMapping(value = "/editvideo/{id}", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseEntity<VideoDto> updateVideo(@PathVariable("id") int id, @Valid VideoDto newVideoData) throws EditVideoException {
+    @PutMapping(value = "/editvideo/{id}")
+    public ResponseEntity<VideoDto> updateVideo(
+            @PathVariable("id") int id,
+            @RequestBody @Valid AddVideoDto newVideoData) throws EditVideoException {
         try {
-            VideoDto videoData = videoService.get(newVideoData.getId());
+            VideoDto videoData = videoService.get(id);
 
             if (videoData != null) {
                 videoData.setTitle(newVideoData.getTitle());
                 videoData.setTheme(newVideoData.getTheme());
-                videoData.setDisciplineEntity(newVideoData.getDisciplineEntity());
+                videoData.setDisciplineEntity(disciplineService.get(newVideoData.getDisciplineId()));
                 videoData.setAuthor(newVideoData.getAuthor());
                 videoData.setUrl(newVideoData.getUrl());
                 videoData.setDescription(newVideoData.getDescription());

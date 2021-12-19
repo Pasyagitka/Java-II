@@ -17,6 +17,7 @@
                          tr += `<option value="${value.id}">${value.name}</option>`;
                      })
                      document.querySelector('#disciplinesSelect').innerHTML = tr;
+                     document.querySelector('#editDisciplinesSelect').innerHTML = tr;
                  });
 
             fetch('/adminmain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
@@ -33,6 +34,7 @@
                                    <td>${value.date.toString()}</td>
                                    <td>${value.url}</td>
                                    <td>${value.description}</td>
+                                   <td><a href="javascript:editVideo(${value.id});"><img src="https://img.icons8.com/ios/50/000000/edit--v1.png" width="20"/></a></td>
                                    <td><a href="javascript:deleteVideo(${value.id});"><img src="https://img.icons8.com/windows/32/000000/delete-sign.png" width="20"/></a></td>
                                </tr>`;
                     });
@@ -80,6 +82,37 @@
                     <input type="text" name="videodescription" id="videodescription" class="form-control">
                 </div>
                 <input type="submit" value="Add" class="btn btn-success" onclick="addVideo()"/>
+            </div>
+        </div>
+        <div class="col-4 container">
+            <h3 style="padding: 10px;">Edit a video</h3>
+            <div class="col rounded bg-light" style=" padding: 10px;">
+                <div class="form-group">
+                    <label for="editvideotitle">Title</label>
+                    <input type="text" name="editvideotitle" id="editvideotitle" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editvideotheme">Theme</label>
+                    <input type="text" name="editvideotheme" id="editvideotheme" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editvideoauthor">Author</label>
+                    <input type="text" name="editvideoauthor" id="editvideoauthor" class="form-control">
+                </div>
+                <div class="dropdown">
+                    <select class="form-select" aria-label="Discipline" id ="editDisciplinesSelect" >
+                        <option selected>Select discipline</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editvideourl">URL</label>
+                    <input type="text" name="editvideourl" id="editvideourl" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editvideodescription">Description</label>
+                    <input type="text" name="editvideodescription" id="editvideodescription" class="form-control">
+                </div>
+                <input type="submit" value="Edit" class="btn btn-success" onclick="editVideo(id)"/>
             </div>
         </div>
         <div class="col container" width="600">
@@ -139,6 +172,30 @@
     }
     async function deleteVideo(id) {
         fetch(`adminmain/deletevideo/${id}`,  {method: 'DELETE', headers: { 'Authorization': `${localStorage.getItem('token')}`}});
+    }
+    async function editVideo(id) {
+        let editvideotitle = document.getElementById("editvideotitle").value;
+        let editvideotheme = document.getElementById("editvideotheme").value;
+        let editvideoauthor = document.getElementById("editvideoauthor").value;
+        let editvideodisciplineId  = $('#editDisciplinesSelect option:selected').val();
+        let editvideourl = document.getElementById("editvideourl").value;
+        let editvideodescription = document.getElementById("editvideodescription").value;
+        fetch(`adminmain/editvideo/${id}`, {
+            method: 'PUT',
+            headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                title: editvideotitle,
+                theme: editvideotheme,
+                disciplineId: editvideodisciplineId,
+                author: editvideoauthor,
+                url: editvideourl,
+                description: editvideodescription
+            })
+        });
     }
 </script>
 </body>
