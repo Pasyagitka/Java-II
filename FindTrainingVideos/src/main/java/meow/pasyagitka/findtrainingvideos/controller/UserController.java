@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-//todo download(list)
 @Controller
 public class UserController {
     @Autowired

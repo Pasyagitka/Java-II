@@ -22,7 +22,7 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class="form-control">
           </div>
-          <a href="#"><small class="text-muted">Create an account.</small></a></br>
+          <a th:href="@{/register}"><small class="text-muted">Create an account.</small></a></br>
           <input type="submit" class="btn btn-success" value="Sign In" onclick="login()"/>
         </div>
       </div>
@@ -30,6 +30,9 @@
   </div>
 </div>
 <script>
+  function register() {
+    document.location.href = "/register";
+  }
   async function login() {
     let login = document.getElementById("login").value;
     let password = document.getElementById("password").value;
@@ -39,7 +42,6 @@
         if (response.status === 200) {
           localStorage.setItem("token", response.headers.get("Authorization"));
           if (login === "pasyagitka") {
-            console.log('adminmain');
             document.location.href = "/adminmain";
             /*  var req = new XMLHttpRequest();
               req.open('GET', '/adminmain', true); //true means request will be async
@@ -55,7 +57,6 @@
               req.setRequestHeader('Authorization', response.headers.get("Authorization"));
               req.send();*/
           } else {
-            console.log('usermain');
             document.location.href = "/usermain";
           }
       } else {

@@ -34,15 +34,6 @@ public class AuthController {
     private JwtProvider jwtProvider;
 
 
-    @PostMapping(value="/register")
-    public ResponseEntity<String> registerUser(@Valid UserDto registrationRequest) {
-        User u = new User();
-        u.setPassword(registrationRequest.getPassword());
-        u.setLogin(registrationRequest.getLogin());
-        userService.saveUser(u);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
-
     @PostMapping(value="/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> auth(@RequestBody @Valid UserAuthDto user) throws UserNotFoundException {
         try {
@@ -55,6 +46,15 @@ public class AuthController {
         catch (Exception e){
             throw new UserNotFoundException("/login: user not found");
         }
+    }
+
+    @PostMapping(value="/register")
+    public ResponseEntity<String> registerUser(@RequestBody @Valid UserDto registrationRequest) {
+        User u = new User();
+        u.setPassword(registrationRequest.getPassword());
+        u.setLogin(registrationRequest.getLogin());
+        userService.saveUser(u);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
 }

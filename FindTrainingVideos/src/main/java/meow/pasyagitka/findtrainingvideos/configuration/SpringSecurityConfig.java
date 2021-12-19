@@ -39,7 +39,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/adminmain/*").hasRole("ADMIN")
                 .antMatchers("/usermain/*").hasRole("USER")
-                .antMatchers("/register", "/login").permitAll()
+                .antMatchers("/login", "/register").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
                 //будет срабатывать при каждом запросе - чтобы спринг как-то увидел пользователя в системе
