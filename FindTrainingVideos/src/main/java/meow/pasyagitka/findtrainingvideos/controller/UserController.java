@@ -14,10 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-//todo search, filter, download(list)
+//todo download(list)
 @Controller
 public class UserController {
     @Autowired
@@ -30,10 +31,7 @@ public class UserController {
     @GetMapping(value = {"/usermain/getVideoList"})
     public ResponseEntity<List<VideoDto>> getVideos() {
         try {
-            //BaseSearch<VideoDto> baseSearch = new BaseSearch<>(new SearchDto("userName","eq", "user1"));
-
             return new ResponseEntity<>(videoService.listAll(), HttpStatus.OK);
-            //return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -51,6 +49,48 @@ public class UserController {
             //BaseSearch<VideoDto> baseSearch = new BaseSearch<>(new SearchDto("userName","eq", "user1"));
             return new ResponseEntity<>(videoService.listAllCriteria(title), HttpStatus.OK);
             //return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "Search videos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Video list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
+    @GetMapping(value = {"/usermain/filterVideos"})
+    public ResponseEntity<List<VideoDto>> filterVideos(
+            @Parameter(description = "theme of video to be filtered")
+            @RequestParam String criteria, @RequestParam String filter) {
+        try {
+            return new ResponseEntity<>(videoService.filterVideos(criteria, filter), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @Operation(summary = "Gets list of all authors")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authors list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Error while returning authors list", content = @Content)})
+    @GetMapping(value = {"/getAuthors"})
+    public ResponseEntity<List<String>> getAuthors() {
+        try {
+            return new ResponseEntity<>(videoService.getAuthors(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Operation(summary = "Gets list of all themes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Theme list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Error while returning theme list", content = @Content)})
+    @GetMapping(value = {"/getThemes"})
+    public ResponseEntity<List<String>> getThemes() {
+        try {
+            return new ResponseEntity<>(videoService.getThemes(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

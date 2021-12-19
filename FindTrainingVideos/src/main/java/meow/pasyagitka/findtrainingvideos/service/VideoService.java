@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static meow.pasyagitka.findtrainingvideos.utils.Mapper.*;
 import static meow.pasyagitka.findtrainingvideos.utils.Mapper.map;
@@ -35,10 +36,16 @@ public class VideoService {
         return mapAll((List<Video>)repo.findAll(), VideoDto.class);
     }
 
-    public List<VideoDto> listAllCriteria(String ctiteria) {
-        VideoSpecification spec = new VideoSpecification(new SearchDto("title", ":", ctiteria));
-        VideoSpecification spec2 = new VideoSpecification(new SearchDto("theme", ":", ctiteria));
+    public List<VideoDto> listAllCriteria(String criteria) {
+        VideoSpecification spec = new VideoSpecification(new SearchDto("title", ":", criteria));
+        VideoSpecification spec2 = new VideoSpecification(new SearchDto("theme", ":", criteria));
         List<Video> list = (List<Video>)repo.findAll(Specification.where(spec).or(spec2));
+        return mapAll(list, VideoDto.class);
+    }
+
+    public List<VideoDto> filterVideos(String filter, String value) {
+        VideoSpecification spec = new VideoSpecification(new SearchDto(filter, ":", value));
+        List<Video> list = (List<Video>)repo.findAll(spec);
         return mapAll(list, VideoDto.class);
     }
 
@@ -61,6 +68,14 @@ public class VideoService {
                 Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
         return this.repo.findAll(pageable);
+    }
+    public List<String> getAuthors(){
+        List<Video> list = repo.findAll();
+        return list.stream().map(Video::getAuthor).distinct().collect(Collectors.toList());
+    }
+    public List<String> getThemes(){
+        List<Video> list = repo.findAll();
+        return list.stream().map(Video::getTheme).distinct().collect(Collectors.toList());
     }
 
     public VideoDto get(int id) {
