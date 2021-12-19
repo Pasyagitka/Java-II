@@ -5,12 +5,21 @@
     <title>Admin - Training Videos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
-            console.log()
-            fetch('/adminmain/getVideoList', {headers: {
-                    'Authorization': `${localStorage.getItem('token')}`,
-                }})
+             fetch('/adminmain/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+                 .then((response) => { return response.json();})
+                 .then(pdata => {
+                     let tr = '';
+                     pdata.forEach(value => {
+                         console.log(value);
+                         tr += `<option value="${value.id}">${value.name}</option>`;
+                     })
+                     document.querySelector('#disciplinesSelect').innerHTML = tr;
+                 });
+
+            fetch('/adminmain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
                 .then((response) => { return response.json();})
                 .then(pdata => {
                     let tr = '';
@@ -21,15 +30,14 @@
                                    <td>${value.title}</td>
                                    <td>${value.theme}</td>
                                    <td>${value.author}</td>
-                                   <td>${value.date}</td>
+                                   <td>${value.date.toString()}</td>
                                    <td>${value.url}</td>
                                    <td>${value.description}</td>
-                                   <td><a href="/adminmain/editvideo/${value.id}"><img src="https://img.icons8.com/ios/50/000000/edit--v1.png" width="20"/></a></td>
-                                   <td><a href="/adminmain/deletevideo/${value.id}"><img src="https://img.icons8.com/windows/32/000000/delete-sign.png" width="20"/></a></td>
+                                   <td><a href="javascript:deleteVideo(${value.id});"><img src="https://img.icons8.com/windows/32/000000/delete-sign.png" width="20"/></a></td>
                                </tr>`;
                     });
                     document.querySelector('#table_id tbody:nth-child(2)').innerHTML = tr; //Append the data
-                }).catch(error => {console.log(error);
+                }).then().catch(error => {console.log(error);
             });
         });
     </script>
@@ -57,6 +65,11 @@
                 <div class="form-group">
                     <label for="videoauthor">Author</label>
                     <input type="text" name="videoauthor" id="videoauthor" class="form-control">
+                </div>
+                <div class="dropdown">
+                    <select class="form-select" aria-label="Discipline" id ="disciplinesSelect" >
+                        <option selected>Select discipline</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="videourl">URL</label>
@@ -93,46 +106,39 @@
 <script>
     async function addVideo() {
         let videotitle = document.getElementById("videotitle").value;
-        let password = document.getElementById("password").value;
-        let response = await fetch("/login",
+        let videotheme = document.getElementById("videotheme").value;
+        let videoauthor = document.getElementById("videoauthor").value;
+        let videodisciplineId  = $('#disciplinesSelect option:selected').val();
+        let videourl = document.getElementById("videourl").value;
+        let videodescription = document.getElementById("videodescription").value;
+        let response = await fetch("/adminmain/addvideo",
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'Authorization': `${localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    login: login,
-                    password: password
+                    title: videotitle,
+                    theme: videotheme,
+                    author: videoauthor,
+                    disciplineId: videodisciplineId,
+                    url: videourl,
+                    description: videodescription
                 })
             });
 
         if (response.status === 200) {
-            localStorage.setItem("token", response.headers.get("Authorization"));
-            if (login === "pasyagitka") {
-                console.log('adminmain');
-                document.location.href = "/adminmain";
-                /*  var req = new XMLHttpRequest();
-                  req.open('GET', '/adminmain', true); //true means request will be async
-                  req.onreadystatechange = function (aEvt) {
-                    if (req.readyState == 4) {
-                      if(req.status == 200) {
-                        document.write(req.responseText);
-                      }
-                      else
-                      alert("Error loading page\n");
-                    }
-                  };
-                  req.setRequestHeader('Authorization', response.headers.get("Authorization"));
-                  req.send();*/
-            } else {
-                console.log('usermain');
-                document.location.href = "/usermain";
-            }
+
         } else {
-            document.querySelector("#result").style.color = "#e74c3c";
-            document.querySelector("#result").innerHTML = data.error;
+            alert(response.statusText);
+            /*document.querySelector("#result").style.color = "#e74c3c";
+            document.querySelector("#result").innerHTML = data.error;*/
         }
+    }
+    async function deleteVideo(id) {
+        fetch(`adminmain/deletevideo/${id}`,  {method: 'DELETE', headers: { 'Authorization': `${localStorage.getItem('token')}`}});
     }
 </script>
 </body>

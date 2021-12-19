@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import meow.pasyagitka.findtrainingvideos.dto.AddVideoDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
 import meow.pasyagitka.findtrainingvideos.exceptions.AddVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.DeleteVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.EditVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.VideoNotFoundException;
+import meow.pasyagitka.findtrainingvideos.service.DisciplineService;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class AdminController {
     @Autowired
     private VideoService videoService;
 
+    @Autowired
+    private DisciplineService disciplineService;
     /*@GetMapping("/adminmain/editvideo/{id}")
     public ModelAndView openedit(@PathVariable("id") int id) {
         ModelAndView modelAndView = new ModelAndView("editvideo.html");
@@ -56,10 +60,16 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VideoDto> saveVideo(
             @Parameter(description = "New video object")
-            @Valid @RequestBody VideoDto videoDto) throws AddVideoException {
+            @Valid @RequestBody AddVideoDto addVideoDto) throws AddVideoException { //todo VideoDto
         try {
-            //videoDto.setDate();
-            VideoDto v = videoService.save(videoDto);
+            VideoDto newVideo = new VideoDto();
+            newVideo.setTitle(addVideoDto.getTitle());
+            newVideo.setTheme(addVideoDto.getTheme());
+            newVideo.setDisciplineEntity(disciplineService.get(addVideoDto.getDisciplineId()));
+            newVideo.setAuthor(addVideoDto.getAuthor());
+            newVideo.setUrl(addVideoDto.getUrl());
+            newVideo.setDescription(addVideoDto.getDescription());
+            VideoDto v = videoService.save(newVideo);
             return new ResponseEntity<>(v, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new AddVideoException("/adminmain/addvideo");

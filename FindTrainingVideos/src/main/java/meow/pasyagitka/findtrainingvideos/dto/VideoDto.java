@@ -36,4 +36,8 @@ public class VideoDto {
 
     @Size(max=30, message = "Description cannot be longer than 250 characters")
     private String description;
+
+  /*  public void setDisciplineEntity(int DisciplineId) {
+        this.disciplineEntity = disciplineEntity;
+    }*/
 }

@@ -33,28 +33,8 @@ public class AuthController {
     @Autowired
     private JwtProvider jwtProvider;
 
- /*   @GetMapping("/adminmain")
-    public ModelAndView welcomeAdmin() {
-        ModelAndView modelAndView = new ModelAndView("adminmain.html");
-        modelAndView.addObject("newVideo", new VideoDto());
-        return modelAndView;
-    }
 
-    @GetMapping("/usermain")
-    public ModelAndView welcomeUser() {
-        ModelAndView modelAndView = new ModelAndView("page.html");
-        modelAndView.addObject("newVideo", new VideoDto());
-        return modelAndView;
-    }
-*/
-   /* @GetMapping("/register")
-    public ModelAndView openRegister() {
-        ModelAndView modelAndView = new ModelAndView("signup.html");
-        modelAndView.addObject("user", new UserDto());
-        return modelAndView;
-    }*/
-
-    @PostMapping(value="/register") // consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE}
+    @PostMapping(value="/register")
     public ResponseEntity<String> registerUser(@Valid UserDto registrationRequest) {
         User u = new User();
         u.setPassword(registrationRequest.getPassword());
@@ -62,14 +42,6 @@ public class AuthController {
         userService.saveUser(u);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
-
-   /* @GetMapping(value="/login")
-    public ModelAndView openLogin() {
-        ModelAndView modelAndView = new ModelAndView("login.html");
-        modelAndView.addObject("token", "");
-        modelAndView.addObject("user", new UserDto());
-        return modelAndView;
-    }*/
 
     @PostMapping(value="/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> auth(@RequestBody @Valid UserAuthDto user) throws UserNotFoundException {

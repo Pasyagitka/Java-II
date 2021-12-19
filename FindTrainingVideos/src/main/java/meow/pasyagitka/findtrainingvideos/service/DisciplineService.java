@@ -26,8 +26,11 @@ public class DisciplineService {
         return mapAll((List<Discipline>)repo.findAll(), DisciplineDto.class);
     }
 
-    public DisciplineDto get(int id) {
+   /* public DisciplineDto get(int id) {
         return map(repo.findById(id).get(), DisciplineDto.class);
+    }*/
+     public Discipline get(int id) {
+        return repo.findById(id).get();
     }
 
     public void delete(int id) {
