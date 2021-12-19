@@ -32,6 +32,7 @@
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = '';
+                obj = pdata;
                 pdata.forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
@@ -88,6 +89,10 @@
                 </select>
             </div>
         </div>
+        <div class="container">
+            <a id="download" download="Videos.json">Download video list</a>
+            <button onclick="download()">Get download url</button>
+        </div>
         <h3 style="align-self: center">List</h3>
         <div id = "videoList"  class="container d-flex flex-wrap-reverse justify-content-center" style="padding: 10px; flex-direction: row-reverse;">
             <!-- https://codingyaar.com/bootstrap-video-card/ -->
@@ -106,6 +111,16 @@
     </div>
 </div>
 <script>
+    async function download() {
+        fetch('/usermain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+            .then((response) => { return response.json();})
+            .then(pdata => {
+                let data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pdata, null, ' '));
+                let a = document.getElementById('download');
+                a.href = 'data:' + data;
+            }).then().catch(error => {console.log(error);
+        });
+    }
     async function filter(){
         let theme = document.getElementById(`filtertheme`).value;
         let author = document.getElementById(`filterauthor`).value;
