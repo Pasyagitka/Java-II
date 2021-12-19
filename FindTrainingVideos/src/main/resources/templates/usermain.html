@@ -12,7 +12,7 @@
         fetch('/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
             .then(pdata => {
-                let tr = `<option value="All authors" selected="selected">All authors</option>`;
+                let tr = `<option value="All" selected="selected">All authors</option>`;
                 pdata.forEach(value => {
                     tr += `<option value="${value}">${value}</option>`;
                 })
@@ -21,7 +21,7 @@
         fetch('/getThemes', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
             .then(pdata => {
-                let tr = `<option value="All"  selected="selected">All themes</option>`;
+                let tr = `<option value="All" selected="selected">All themes</option>`;
                 pdata.forEach(value => {
                     tr += `<option value="${value}">${value}</option>`;
                 })
@@ -78,12 +78,12 @@
         <div class="container" style="margin: 10px;">
             <h3 style="padding: 10px;">Filter</h3>
             <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filtertheme" onmouseup="filter('theme')">
+                <select class="form-select" aria-label="Discipline" id="filtertheme" onmouseup="filter()">
                     <option selected>Theme</option>
                 </select>
             </div>
             <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filterauthor" onmouseup="filter('author')">
+                <select class="form-select" aria-label="Discipline" id="filterauthor" onmouseup="filter()">
                     <option selected>Author</option>
                 </select>
             </div>
@@ -106,9 +106,12 @@
     </div>
 </div>
 <script>
-    async function filter(criteria){
-        let parm = document.getElementById(`filter${criteria}`).value;
-        fetch(`/usermain/filterVideos?criteria=${criteria}&filter=${parm}`, {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+    async function filter(){
+        let theme = document.getElementById(`filtertheme`).value;
+        let author = document.getElementById(`filterauthor`).value;
+        let url = `/usermain/filterVideos?theme=${theme}&author=${author}`;
+        if (theme === "All" && author === "All") url =  `/usermain/getVideoList`;
+        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = '';

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,13 @@ public class VideoService {
         return mapAll(list, VideoDto.class);
     }
 
-    public List<VideoDto> filterVideos(String filter, String value) {
-        VideoSpecification spec = new VideoSpecification(new SearchDto(filter, ":", value));
-        List<Video> list = (List<Video>)repo.findAll(spec);
+    public List<VideoDto> filterVideos(String theme, String author) {
+        VideoSpecification spec1 = new VideoSpecification(new SearchDto("theme", ":", theme));
+        VideoSpecification spec2 = new VideoSpecification(new SearchDto("author", ":", author));
+        List<Video> list;
+        if (Objects.equals(author, "All")) list = repo.findAll(spec1);
+        else if (Objects.equals(theme, "All")) list = repo.findAll(spec2);
+        else list = repo.findAll(Specification.where(spec1).and(spec2));
         return mapAll(list, VideoDto.class);
     }
 

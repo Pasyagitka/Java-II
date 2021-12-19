@@ -61,14 +61,13 @@ public class UserController {
     @GetMapping(value = {"/usermain/filterVideos"})
     public ResponseEntity<List<VideoDto>> filterVideos(
             @Parameter(description = "theme of video to be filtered")
-            @RequestParam String criteria, @RequestParam String filter) {
+            @RequestParam String theme, @RequestParam String author) {
         try {
-            return new ResponseEntity<>(videoService.filterVideos(criteria, filter), HttpStatus.OK);
+            return new ResponseEntity<>(videoService.filterVideos(theme, author), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @Operation(summary = "Gets list of all authors")
     @ApiResponses(value = {
