@@ -15,11 +15,11 @@ public class VideoDto {
     private int id;
 
     @NotEmpty(message = "Title cannot be null")
-    @Size(max=30, message = "Title cannot be longer than 30 characters")
+    @Size(max=100, message = "Title cannot be longer than 100 characters")
     private String title;
 
     @NotEmpty(message = "Theme cannot be null")
-    @Size(max=30, message = "Theme cannot be longer than 30 characters")
+    @Size(max=100, message = "Theme cannot be longer than 100 characters")
     private String theme;
 
     private Discipline disciplineEntity;
@@ -30,11 +30,11 @@ public class VideoDto {
 
     private Date date;
 
-    @Size(max=30, message = "URL cannot be longer than 74 characters")
+    @Size(max=250, message = "URL cannot be longer than 250 characters")
     @NotEmpty(message = "Video url cannot be null")
     private String url;
 
-    @Size(max=30, message = "Description cannot be longer than 250 characters")
+    @Size(max=250, message = "Description cannot be longer than 250 characters")
     private String description;
 
   /*  public void setDisciplineEntity(int DisciplineId) {

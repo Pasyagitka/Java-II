@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Usermain - Training Videos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
+<script>
+    $(document).ready(function() {
+        fetch('/usermain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+            .then((response) => { return response.json();})
+            .then(pdata => {
+                let tr = '';
+                pdata.forEach(function (value) {
+                    tr += `
+                     <div class="card" style="width: 18rem; margin: 20px">
+                           <video src="${value.url}" controls></video>
+                            <div class="card-body">
+                                <h5 class="card-title">${value.title}</h5>
+                                <p class="card-text">${value.theme}, ${value.description}</p>
+                                <a href="${value.url}" class="btn btn-outline-secondary">Watch</a>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">${new Date(value.date).toDateString()}, ${value.author}</small>
+                            </div>
+                       </div>`;
+                });
+                document.querySelector('#videoList').innerHTML = tr; //Append the data
+            }).then().catch(error => {console.log(error);
+        });
+    });
+</script>
+<body>
+<div class="container">
+    <nav class="navbar navbar-light text-light bg-success justify-content-between" style="margin: 10px;">
+        <a class="navbar-brand text-light" href="#">
+            <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            Training Videos
+        </a>
+        <h4 th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]]!</h4>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+        <!--<input type="button" class="btn btn-outline-light" value="Sign Out"/>-->
+    </nav>
+    <div class="row">
+
+        <div class="col container" style="margin: 10px;">
+            <div class="row">
+                <div class="col-10">
+                    <input type="text" id="search-input" placeholder="Search by title or theme" class="form-control">
+                </div>
+                <div class="col-1">
+                    <input type="button" class="btn btn-outline-success" value="Search" onclick="search()"/>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin: 10px;">
+            <h3 style="padding: 10px;">Filter</h3>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Theme
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Theme</a>
+                    <a class="dropdown-item" href="#">Another Theme</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Discipline
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Discipline</a>
+                    <a class="dropdown-item" href="#">Another Discipline</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Author
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Author</a>
+                    <a class="dropdown-item" href="#">Another Author</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+        </div>
+        <h3 style="align-self: center">List</h3>
+        <div id = "videoList"  class="container d-flex flex-wrap-reverse justify-content-center" style="padding: 10px; flex-direction: row-reverse;">
+            <!-- https://codingyaar.com/bootstrap-video-card/ -->
+                <div class="card" style="width: 18rem;">
+                    <video src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4" controls></video>
+                    <div class="card-body">
+                        <h5 class="card-title">...</h5>
+                        <p class="card-text">...</p>
+                        <a href="#" class="btn btn-outline-secondary">Watch</a>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">29/09/2021, pasyagitka</small>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<script>
+    async function search() {
+        let search = document.getElementById("search-input").value;
+        let url = (search.length === 0) ? `/usermain/getVideoList` : `/usermain/searchVideos/${search}`;
+        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+            .then((response) => { return response.json();})
+            .then(pdata => {
+                let tr = '';
+                pdata.forEach(function (value) {
+                    tr += `
+                     <div class="card" style="width: 18rem; margin: 20px">
+                           <video src="${value.url}" controls></video>
+                            <div class="card-body">
+                                <h5 class="card-title">${value.title}</h5>
+                                <p class="card-text">${value.theme}, ${value.description}</p>
+                                <a href="${value.url}" class="btn btn-outline-secondary">Watch</a>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">${new Date(value.date).toDateString()}, ${value.author}</small>
+                            </div>
+                       </div>`;
+                });
+                document.querySelector('#videoList').innerHTML = tr; //Append the data
+            }).then().catch(error => {console.log(error);
+        });
+    }
+</script>
+</body>
+</html>

@@ -32,12 +32,6 @@ public class AdminController {
 
     @Autowired
     private DisciplineService disciplineService;
-    /*@GetMapping("/adminmain/editvideo/{id}")
-    public ModelAndView openedit(@PathVariable("id") int id) {
-        ModelAndView modelAndView = new ModelAndView("editvideo.html");
-        modelAndView.addObject("video", videoService.get(id));
-        return modelAndView;
-    }*/
 
     @Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
@@ -109,7 +103,9 @@ public class AdminController {
             @ApiResponse(responseCode = "204", description = "Video is deleted", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while deleting a video", content = @Content)})
     @DeleteMapping("/deletevideo/{id}")
-    public ResponseEntity<HttpStatus> deleteVideo(@Parameter(description = "id of video to be deleted") @PathVariable("id") int id) throws DeleteVideoException {
+    public ResponseEntity<HttpStatus> deleteVideo(
+            @Parameter(description = "id of video to be deleted")
+            @PathVariable("id") int id) throws DeleteVideoException {
         try {
             videoService.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

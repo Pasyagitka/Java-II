@@ -1,8 +1,10 @@
 package meow.pasyagitka.findtrainingvideos.service;
 
+import meow.pasyagitka.findtrainingvideos.dto.SearchDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.repository.VideoRepository;
+import meow.pasyagitka.findtrainingvideos.specification.VideoSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,9 +35,17 @@ public class VideoService {
         return mapAll((List<Video>)repo.findAll(), VideoDto.class);
     }
 
+    public List<VideoDto> listAllCriteria(String ctiteria) {
+        VideoSpecification spec = new VideoSpecification(new SearchDto("title", ":", ctiteria));
+        VideoSpecification spec2 = new VideoSpecification(new SearchDto("theme", ":", ctiteria));
+        List<Video> list = (List<Video>)repo.findAll(Specification.where(spec).or(spec2));
+        return mapAll(list, VideoDto.class);
+    }
+
     public Page<Video> findAll(org.springframework.data.domain.Pageable pageable) {
         return repo.findAll(pageable);
     }
+
 
     public Page<Video> findPaginatedCriteria(int pageNo, int pageSize, String sortField, String sortDirection, Specification<Video> spec) {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?

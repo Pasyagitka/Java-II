@@ -32,7 +32,6 @@
 <script>
   async function login() {
     let login = document.getElementById("login").value;
-    console.log(login);
     let password = document.getElementById("password").value;
     console.log(password);
     fetch("/login", { method: 'POST',  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ login: login, password: password }) })
