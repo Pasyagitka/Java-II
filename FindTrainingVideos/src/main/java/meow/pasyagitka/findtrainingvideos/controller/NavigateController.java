@@ -16,4 +16,14 @@ public class NavigateController {
     public ModelAndView openRegister() {
         return new ModelAndView("register");
     }
+
+    @GetMapping("/adminmain")
+    public ModelAndView openAdminMain() {
+        return new ModelAndView("adminmain");
+    }
+
+    @GetMapping("/usermain")
+    public ModelAndView openUserMain() {
+        return new ModelAndView("usermain");
+    }
 }

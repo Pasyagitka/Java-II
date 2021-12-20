@@ -18,6 +18,14 @@
         <java.version>11</java.version>
     </properties>
     <dependencies>
+        <!--e-mail-->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.5.0-b01</version>
+        </dependency>
+        <!--e-mail-->
+
         <!--Open API-->
         <dependency>
             <groupId>org.springdoc</groupId>

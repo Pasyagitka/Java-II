@@ -8,6 +8,113 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
+            fetch('/adminmain/load', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+                .then((response) => {
+                    let root = document.getElementById('root');
+                    console.log(response.status);
+                    if(response.status === 200) {
+                        root.innerHTML = '\n' +
+                            '    <nav class="navbar navbar-light bg-success justify-content-between" style="margin: 10px;">\n' +
+                            '        <a class="navbar-brand text-light" href="#">\n' +
+                            '            <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">\n' +
+                            '            Training Videos - Admin\n' +
+                            '        </a>\n' +
+                            '        <a class="navbar-brand text-light" th:href="@{/usermain}">\n' +
+                            '            Go to user`s view\n' +
+                            '        </a>\n' +
+                            '    </nav>\n' +
+                            '    <div class="row">\n' +
+                            '        <div class="col-4 container">\n' +
+                            '            <h3 style="padding: 10px;">Add a video</h3>\n' +
+                            '            <div class="col rounded bg-light" style=" padding: 10px;">\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="videotitle">Title</label>\n' +
+                            '                    <input type="text" name="videotitle" id="videotitle" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="videotheme">Theme</label>\n' +
+                            '                    <input type="text" name="videotheme" id="videotheme" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="videoauthor">Author</label>\n' +
+                            '                    <input type="text" name="videoauthor" id="videoauthor" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="dropdown">\n' +
+                            '                    <select class="form-select" aria-label="Discipline" id ="disciplinesSelect" >\n' +
+                            '                        <option selected>Select discipline</option>\n' +
+                            '                    </select>\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="videourl">URL</label>\n' +
+                            '                    <input type="text" name="videourl" id="videourl" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="videodescription">Description</label>\n' +
+                            '                    <input type="text" name="videodescription" id="videodescription" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <input type="submit" value="Add" class="btn btn-success" onclick="addVideo()"/>\n' +
+                            '            </div>\n' +
+                            '        </div>\n' +
+                            '        <div class="col-4 container">\n' +
+                            '            <h3 style="padding: 10px;">Edit a video</h3>\n' +
+                            '            <div class="col rounded bg-light" style=" padding: 10px;">\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="editvideotitle">Title</label>\n' +
+                            '                    <input type="text" name="editvideotitle" id="editvideotitle" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="editvideotheme">Theme</label>\n' +
+                            '                    <input type="text" name="editvideotheme" id="editvideotheme" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="editvideoauthor">Author</label>\n' +
+                            '                    <input type="text" name="editvideoauthor" id="editvideoauthor" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="dropdown">\n' +
+                            '                    <select class="form-select" aria-label="Discipline" id ="editDisciplinesSelect" >\n' +
+                            '                        <option selected>Select discipline</option>\n' +
+                            '                    </select>\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="editvideourl">URL</label>\n' +
+                            '                    <input type="text" name="editvideourl" id="editvideourl" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="editvideodescription">Description</label>\n' +
+                            '                    <input type="text" name="editvideodescription" id="editvideodescription" class="form-control">\n' +
+                            '                </div>\n' +
+                            '                <a id="editVideoButton" class="btn btn-success">Edit</a>\n' +
+                            '            </div>\n' +
+                            '        </div>\n' +
+                            '        <div class="col container" width="600">\n' +
+                            '            <h3 style="padding: 10px;">List</h3>\n' +
+                            '            <nav aria-label="Pages">\n' +
+                            '                <ul class="pagination" id="pagination">\n' +
+                            '                    <li class="page-item"><a class="page-link" href="#">1</a></li>\n' +
+                            '                </ul>\n' +
+                            '            </nav>\n' +
+                            '            <table class="table" id="table_id">\n' +
+                            '                <tbody>\n' +
+                            '                <tr class="bg-light">\n' +
+                            '                    <th>Title</th>\n' +
+                            '                    <th>Theme</th>\n' +
+                            '                    <!--  <th>Discipline</th>-->\n' +
+                            '                    <th>Author</th>\n' +
+                            '                    <th>Date</th>\n' +
+                            '                    <th>URL</th>\n' +
+                            '                    <th>Description</th>\n' +
+                            '                    <th>edit</th>\n' +
+                            '                    <th>delete</th>\n' +
+                            '                </tr>\n' +
+                            '                </tbody>\n' +
+                            '                <tbody/>\n' +
+                            '            </table>\n' +
+                            '        </div>\n' +
+                            '    </div>'
+                    }
+                    else root.innerHTML = '<h1>Admin page is forbidden</h1>';
+                })
+
              fetch('/general/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
                  .then((response) => { return response.json();})
                  .then(pdata => {
@@ -49,105 +156,7 @@
     </script>
 </head>
 <body>
-<div class="container">
-    <nav class="navbar navbar-light bg-success justify-content-between" style="margin: 10px;">
-        <a class="navbar-brand text-light" href="#">
-            <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
-            Training Videos - Admin
-        </a>
-        <a class="navbar-brand text-light" th:href="@{/usermain}">
-            Go to user`s view
-        </a>
-    </nav>
-    <div class="row">
-        <div class="col-4 container">
-            <h3 style="padding: 10px;">Add a video</h3>
-            <div class="col rounded bg-light" style=" padding: 10px;">
-                <div class="form-group">
-                    <label for="videotitle">Title</label>
-                    <input type="text" name="videotitle" id="videotitle" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="videotheme">Theme</label>
-                    <input type="text" name="videotheme" id="videotheme" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="videoauthor">Author</label>
-                    <input type="text" name="videoauthor" id="videoauthor" class="form-control">
-                </div>
-                <div class="dropdown">
-                    <select class="form-select" aria-label="Discipline" id ="disciplinesSelect" >
-                        <option selected>Select discipline</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="videourl">URL</label>
-                    <input type="text" name="videourl" id="videourl" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="videodescription">Description</label>
-                    <input type="text" name="videodescription" id="videodescription" class="form-control">
-                </div>
-                <input type="submit" value="Add" class="btn btn-success" onclick="addVideo()"/>
-            </div>
-        </div>
-        <div class="col-4 container">
-            <h3 style="padding: 10px;">Edit a video</h3>
-            <div class="col rounded bg-light" style=" padding: 10px;">
-                <div class="form-group">
-                    <label for="editvideotitle">Title</label>
-                    <input type="text" name="editvideotitle" id="editvideotitle" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="editvideotheme">Theme</label>
-                    <input type="text" name="editvideotheme" id="editvideotheme" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="editvideoauthor">Author</label>
-                    <input type="text" name="editvideoauthor" id="editvideoauthor" class="form-control">
-                </div>
-                <div class="dropdown">
-                    <select class="form-select" aria-label="Discipline" id ="editDisciplinesSelect" >
-                        <option selected>Select discipline</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editvideourl">URL</label>
-                    <input type="text" name="editvideourl" id="editvideourl" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="editvideodescription">Description</label>
-                    <input type="text" name="editvideodescription" id="editvideodescription" class="form-control">
-                </div>
-                <a id="editVideoButton" class="btn btn-success">Edit</a>
-            </div>
-        </div>
-        <div class="col container" width="600">
-            <h3 style="padding: 10px;">List</h3>
-            <nav aria-label="Pages">
-                <ul class="pagination" id="pagination">
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                </ul>
-            </nav>
-            <table class="table" id="table_id">
-                <tbody>
-                <tr class="bg-light">
-                    <th>Title</th>
-                    <th>Theme</th>
-                    <!--  <th>Discipline</th>-->
-                    <th>Author</th>
-                    <th>Date</th>
-                    <th>URL</th>
-                    <th>Description</th>
-                    <th>edit</th>
-                    <th>delete</th>
-                </tr>
-                </tbody>
-                <tbody/>
-            </table>
-        </div>
-    </div>
-</div>
+<div class="container" id="root"></div>
 <script>
     async function addVideo() {
         let videotitle = document.getElementById("videotitle").value;

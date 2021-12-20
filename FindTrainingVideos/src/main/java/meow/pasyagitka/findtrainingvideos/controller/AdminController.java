@@ -127,4 +127,9 @@ public class AdminController {
             throw new DeleteVideoException("/adminmain/deletevideo/{id}");
         }
     }
+
+    @GetMapping("/load")
+    public ResponseEntity<HttpStatus> load(){
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

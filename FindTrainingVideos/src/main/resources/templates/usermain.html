@@ -13,11 +13,6 @@
             .then((response) => { return response.text();})
             .then(pdata => {
                     document.querySelector('#username').innerHTML = `Hello, ${pdata}`;
-                    if(pdata === 'pasyagitka') {
-                        let href = document.querySelector('#adminpage');
-                        href.textContent = 'Go to admin`s view';
-                        href.href = 'javascript:goToAdminPage()';
-                    }
                 });
 
         fetch('/general/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
@@ -55,7 +50,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">${value.title}</h5>
                                 <p class="card-text">${value.theme}, ${value.description}</p>
-                                <a href="${value.url}" class="btn btn-outline-secondary">Watch</a>
+                                <a href="${value.url}" download class="btn btn-outline-secondary">Watch</a>
                             </div>
                             <div class="card-footer">
                                 <small class="text-muted">${new Date(value.date).toDateString()}, ${value.author}</small>

@@ -28,14 +28,10 @@ public class JwtFilter extends GenericFilterBean {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private CustomUserDetailsService customUserDetailsService;
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         logger.info("do filter...");
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
-
         if (token != null && jwtProvider.validateToken(token)) {
             String userLogin = jwtProvider.getLoginFromToken(token);
             CustomUserDetails customUserDetails = (CustomUserDetails) userService.loadUserByUsername(userLogin);
