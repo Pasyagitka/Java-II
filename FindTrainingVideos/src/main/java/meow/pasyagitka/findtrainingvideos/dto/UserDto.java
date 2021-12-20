@@ -16,5 +16,7 @@ public class UserDto {
     @Password(message = "${valid.password.password}")
     private String password;
 
+    private String email;
+
     private Role roleEntity;
 }

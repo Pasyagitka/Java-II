@@ -3,6 +3,7 @@ package meow.pasyagitka.findtrainingvideos.service;
 import meow.pasyagitka.findtrainingvideos.dto.UserDto;
 import meow.pasyagitka.findtrainingvideos.model.Role;
 import meow.pasyagitka.findtrainingvideos.model.User;
+import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.repository.RoleRepository;
 import meow.pasyagitka.findtrainingvideos.repository.UserRepository;
 import meow.pasyagitka.findtrainingvideos.dto.CustomUserDetails;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static meow.pasyagitka.findtrainingvideos.utils.Mapper.map;
 import static meow.pasyagitka.findtrainingvideos.utils.Mapper.mapAll;
@@ -76,5 +78,10 @@ public class UserService implements UserDetailsService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto userEntity = this.findByLogin(username);
         return CustomUserDetails.fromUserEntityToCustomUserDetails(userEntity);
+    }
+
+    public List<String> getEmails(){
+        var list = userRepository.findAll();
+        return list.stream().map(User::getEmail).distinct().collect(Collectors.toList());
     }
 }

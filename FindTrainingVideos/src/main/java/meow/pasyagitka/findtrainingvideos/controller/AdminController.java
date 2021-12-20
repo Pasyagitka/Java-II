@@ -8,12 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import meow.pasyagitka.findtrainingvideos.dto.AddVideoDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
-import meow.pasyagitka.findtrainingvideos.exceptions.AddVideoException;
-import meow.pasyagitka.findtrainingvideos.exceptions.DeleteVideoException;
-import meow.pasyagitka.findtrainingvideos.exceptions.EditVideoException;
-import meow.pasyagitka.findtrainingvideos.exceptions.VideoNotFoundException;
+import meow.pasyagitka.findtrainingvideos.exceptions.*;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.service.DisciplineService;
+import meow.pasyagitka.findtrainingvideos.service.EmailService;
+import meow.pasyagitka.findtrainingvideos.service.UserService;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,8 +36,15 @@ public class AdminController {
     @Autowired
     private DisciplineService disciplineService;
 
+    @Autowired
+    private EmailService emailService;
 
-  /*  @Operation(summary = "Gets list of all videos")
+    @Autowired
+    private UserService userService;
+
+
+
+    /*  @Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
@@ -78,6 +84,9 @@ public class AdminController {
             newVideo.setUrl(addVideoDto.getUrl());
             newVideo.setDescription(addVideoDto.getDescription());
             VideoDto v = videoService.save(newVideo);
+            for (var email: userService.getEmails()) {
+                emailService.send(email, "from TrainingVideos", String.format("There is a new video on TrainingVideos: %s. Check this out!", v.getTitle()));
+            }
             return new ResponseEntity<>(v, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new AddVideoException("/adminmain/addvideo");
@@ -122,7 +131,7 @@ public class AdminController {
             @PathVariable("id") int id) throws DeleteVideoException {
         try {
             videoService.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             throw new DeleteVideoException("/adminmain/deletevideo/{id}");
         }
@@ -132,4 +141,5 @@ public class AdminController {
     public ResponseEntity<HttpStatus> load(){
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

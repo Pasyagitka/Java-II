@@ -18,6 +18,9 @@ public class User {
     private String login;
 
     @Column
+    private String email;
+
+    @Column
     private String password;
 
     @ManyToOne
