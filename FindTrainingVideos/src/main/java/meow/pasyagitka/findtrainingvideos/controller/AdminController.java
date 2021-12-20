@@ -12,17 +12,21 @@ import meow.pasyagitka.findtrainingvideos.exceptions.AddVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.DeleteVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.EditVideoException;
 import meow.pasyagitka.findtrainingvideos.exceptions.VideoNotFoundException;
+import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.service.DisciplineService;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping(value = "/adminmain")
 @RestController
@@ -33,14 +37,24 @@ public class AdminController {
     @Autowired
     private DisciplineService disciplineService;
 
-    @Operation(summary = "Gets list of all videos")
+
+  /*  @Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
     @GetMapping(value = {"/getVideoList"})
-    public ResponseEntity<List<VideoDto>> getVideos() {
+    public ResponseEntity<Page<Video>> getVideosPaginated(@RequestParam("page") Optional<Integer> page) {
         try {
-            return new ResponseEntity<>(videoService.listAll(), HttpStatus.OK);
+            return new ResponseEntity<Page<Video>>(videoService.findPaginated(page.orElse(0)), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+*/
+    @GetMapping(value = {"/getVideo/{id}"})
+    public ResponseEntity<VideoDto> getVideo(@PathVariable("id") int id) {
+        try {
+            return ResponseEntity.ok(videoService.get(id));
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -9,7 +9,18 @@
 </head>
 <script>
     $(document).ready(function() {
-        fetch('/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getUsername', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+            .then((response) => { return response.text();})
+            .then(pdata => {
+                    document.querySelector('#username').innerHTML = `Hello, ${pdata}`;
+                    if(pdata === 'pasyagitka') {
+                        let href = document.querySelector('#adminpage');
+                        href.textContent = 'Go to admin`s view';
+                        href.href = 'javascript:goToAdminPage()';
+                    }
+                });
+
+        fetch('/general/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = `<option value="All" selected="selected">All authors</option>`;
@@ -18,7 +29,7 @@
                 })
                 document.querySelector('#filterauthor').innerHTML = tr;
             });
-        fetch('/getThemes', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getThemes', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = `<option value="All" selected="selected">All themes</option>`;
@@ -28,11 +39,15 @@
                 document.querySelector('#filtertheme').innerHTML = tr;
             });
 
-        fetch('/usermain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
             .then((response) => { return response.json();})
-            .then(pdata => {
+            .then(data => {
                 let tr = '';
-                obj = pdata;
+                let pages = '';
+                let pdata = data.content;
+                for (let i = 1; i<=  data.totalPages; i++) {
+                    pages += `<li class="page-item"><a class="page-link" href="javascript:setPage('all', ${i})">${i}</a></li>`;
+                }
                 pdata.forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
@@ -47,7 +62,8 @@
                             </div>
                        </div>`;
                 });
-                document.querySelector('#videoList').innerHTML = tr; //Append the data
+                document.querySelector('#videoList').innerHTML = tr;
+                document.querySelector('#pagination').innerHTML = pages;
             }).then().catch(error => {console.log(error);
         });
     });
@@ -59,7 +75,9 @@
             <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
             Training Videos
         </a>
-        <h4 th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]]!</h4>
+        <h4 id="username"></h4>
+        <a class="navbar-brand text-light" id="adminpage">
+        </a>
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
@@ -72,19 +90,19 @@
                     <input type="text" id="search-input" placeholder="Search by title or theme" class="form-control">
                 </div>
                 <div class="col-1">
-                    <input type="button" class="btn btn-outline-success" value="Search" onclick="search()"/>
+                    <input type="button" class="btn btn-outline-success" value="Search" onclick="search(0)"/>
                 </div>
             </div>
         </div>
         <div class="container" style="margin: 10px;">
             <h3 style="padding: 10px;">Filter</h3>
             <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filtertheme" onmouseup="filter()">
+                <select class="form-select" aria-label="Discipline" id="filtertheme" onmouseup="filter(0)">
                     <option selected>Theme</option>
                 </select>
             </div>
             <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filterauthor" onmouseup="filter()">
+                <select class="form-select" aria-label="Discipline" id="filterauthor" onmouseup="filter(0)">
                     <option selected>Author</option>
                 </select>
             </div>
@@ -93,26 +111,20 @@
             <a id="download" download="Videos.json">Download video list</a>
             <button onclick="download()">Get download url</button>
         </div>
-        <h3 style="align-self: center">List</h3>
+        <h3 style="align-self: center">List</h3><br>
+        <nav aria-label="Pages">
+            <ul class="pagination" id="pagination">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+            </ul>
+        </nav>
         <div id = "videoList"  class="container d-flex flex-wrap-reverse justify-content-center" style="padding: 10px; flex-direction: row-reverse;">
             <!-- https://codingyaar.com/bootstrap-video-card/ -->
-                <div class="card" style="width: 18rem;">
-                    <video src="https://codingyaar.com/wp-content/uploads/video-in-bootstrap-card.mp4" controls></video>
-                    <div class="card-body">
-                        <h5 class="card-title">...</h5>
-                        <p class="card-text">...</p>
-                        <a href="#" class="btn btn-outline-secondary">Watch</a>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">29/09/2021, pasyagitka</small>
-                    </div>
-                </div>
         </div>
     </div>
 </div>
 <script>
     async function download() {
-        fetch('/usermain/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/usermain/getVideoListDownload', {headers: { 'Authorization': `${localStorage.getItem('token')}`  }})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pdata, null, ' '));
@@ -121,15 +133,20 @@
             }).then().catch(error => {console.log(error);
         });
     }
-    async function filter(){
+    async function filter(page){
         let theme = document.getElementById(`filtertheme`).value;
         let author = document.getElementById(`filterauthor`).value;
-        let url = `/usermain/filterVideos?theme=${theme}&author=${author}`;
-        if (theme === "All" && author === "All") url =  `/usermain/getVideoList`;
-        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        let url = `/usermain/filterVideos?page=${page}&theme=${theme}&author=${author}`;
+        if (theme === "All" && author === "All") url =  `/general/getVideoList`;
+        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
             .then((response) => { return response.json();})
-            .then(pdata => {
+            .then(data => {
                 let tr = '';
+                let pages = '';
+                let pdata = data.content;
+                for (let i = 1; i<= data.totalPages; i++) {
+                    pages += `<li class="page-item"><a class="page-link" href="javascript:setPage('filter', ${i})">${i}</a></li>`;
+                }
                 pdata.forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
@@ -145,16 +162,23 @@
                        </div>`;
                 });
                 document.querySelector('#videoList').innerHTML = tr;
+                document.querySelector('#pagination').innerHTML = pages;
             }).then().catch(error => {console.log(error);
         });
     }
-    async function search() {
+    async function search(page) {
         let search = document.getElementById("search-input").value;
-        let url = (search.length === 0) ? `/usermain/getVideoList` : `/usermain/searchVideos/${search}`;
-        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        let url = (search.length === 0) ? `/general/getVideoList?page=${page}` : `/usermain/searchVideos/${search}?page=${page}`;
+        fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
             .then((response) => { return response.json();})
-            .then(pdata => {
+            .then(data => {
                 let tr = '';
+                let pages ='';
+                pdata = data.content;
+                console.log(pdata);
+                for (let i = 1; i<= data.totalPages; i++) {
+                    pages += `<li class="page-item"><a class="page-link" href="javascript:setPage('search', ${i})">${i}</a></li>`;
+                }
                 pdata.forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
@@ -170,8 +194,34 @@
                        </div>`;
                 });
                 document.querySelector('#videoList').innerHTML = tr;
+                document.querySelector('#pagination').innerHTML = pages;
             }).then().catch(error => {console.log(error);
         });
+    }
+    async function setPage(criteria, page) {
+        if (criteria === 'filter') {filter(page-1); return;}
+        if (criteria === 'search') {search(page-1); return;}
+        fetch(`/general/getVideoList?page=${page-1}`, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
+            .then((response) => { return response.json();})
+            .then(data => {
+                let tr = '';
+                let pdata = data.content;
+                pdata.forEach(function (value) {
+                    tr += `
+                     <div class="card" style="width: 18rem; margin: 20px">
+                           <video src="${value.url}" controls></video>
+                            <div class="card-body">
+                                <h5 class="card-title">${value.title}</h5>
+                                <p class="card-text">${value.theme}, ${value.description}</p>
+                                <a href="${value.url}" class="btn btn-outline-secondary">Watch</a>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">${new Date(value.date).toDateString()}, ${value.author}</small>
+                            </div>
+                       </div>`;
+                });
+                document.querySelector('#videoList').innerHTML = tr;
+            }).then().catch(error => {console.log(error);});
     }
 </script>
 </body>

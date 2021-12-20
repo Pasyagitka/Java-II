@@ -35,6 +35,7 @@ public class AuthController {
 
 
     @PostMapping(value="/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> auth(@RequestBody @Valid UserAuthDto user) throws UserNotFoundException {
         try {
             UserDto userEntity = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());

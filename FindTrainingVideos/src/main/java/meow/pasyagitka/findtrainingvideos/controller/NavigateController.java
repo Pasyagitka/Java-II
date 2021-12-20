@@ -9,13 +9,11 @@ public class NavigateController {
 
     @GetMapping("/login")
     public ModelAndView openLogin() {
-        ModelAndView modelAndView = new ModelAndView("login");
-        return modelAndView;
+        return new ModelAndView("login");
     }
 
     @GetMapping("/register")
     public ModelAndView openRegister() {
-        ModelAndView modelAndView = new ModelAndView("register");
-        return modelAndView;
+        return new ModelAndView("register");
     }
 }

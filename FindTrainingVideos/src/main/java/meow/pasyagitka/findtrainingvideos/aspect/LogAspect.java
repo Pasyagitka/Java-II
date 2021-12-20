@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 public class LogAspect {
     Logger logger=Logger.getLogger(LogAspect.class);
 
-    @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.DisciplineController.*(..))")
+    @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.GeneralController.*(..))")
     public void callAtDisciplineController() {}
     @Before("callAtDisciplineController()")
     public void beforeCallDiscipline(JoinPoint jp) {logger.info("before " + jp.getSignature());}

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>Sign In</title>
-
 </head>
 <body>
 <div class="container" style="padding: 10px;">
@@ -36,13 +35,12 @@
   async function login() {
     let login = document.getElementById("login").value;
     let password = document.getElementById("password").value;
-    console.log(password);
     fetch("/login", { method: 'POST',  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ login: login, password: password }) })
     .then((response) => {
         if (response.status === 200) {
           localStorage.setItem("token", response.headers.get("Authorization"));
           if (login === "pasyagitka") {
-            document.location.href = "/adminmain";
+            //document.location.href = "/adminmain";
             /*  var req = new XMLHttpRequest();
               req.open('GET', '/adminmain', true); //true means request will be async
               req.onreadystatechange = function (aEvt) {
@@ -57,7 +55,7 @@
               req.setRequestHeader('Authorization', response.headers.get("Authorization"));
               req.send();*/
           } else {
-            document.location.href = "/usermain";
+           // document.location.href = "/usermain";
           }
       } else {
         document.querySelector("#result").style.color = "#e74c3c";

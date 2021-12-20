@@ -37,43 +37,28 @@ public class VideoService {
         return mapAll((List<Video>)repo.findAll(), VideoDto.class);
     }
 
-    public List<VideoDto> listAllCriteria(String criteria) {
+    public Page<Video> listAllCriteria(int pageNo, String criteria) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 6);
         VideoSpecification spec = new VideoSpecification(new SearchDto("title", ":", criteria));
         VideoSpecification spec2 = new VideoSpecification(new SearchDto("theme", ":", criteria));
-        List<Video> list = (List<Video>)repo.findAll(Specification.where(spec).or(spec2));
-        return mapAll(list, VideoDto.class);
+        return (Page<Video>)repo.findAll(Specification.where(spec).or(spec2), pageRequest);
     }
 
-    public List<VideoDto> filterVideos(String theme, String author) {
+    public Page<Video> filterVideos(int pageNo, String theme, String author) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 6);
         VideoSpecification spec1 = new VideoSpecification(new SearchDto("theme", ":", theme));
         VideoSpecification spec2 = new VideoSpecification(new SearchDto("author", ":", author));
-        List<Video> list;
-        if (Objects.equals(author, "All")) list = repo.findAll(spec1);
-        else if (Objects.equals(theme, "All")) list = repo.findAll(spec2);
-        else list = repo.findAll(Specification.where(spec1).and(spec2));
-        return mapAll(list, VideoDto.class);
+        Page<Video> list;
+        if (Objects.equals(author, "All")) list = repo.findAll(spec1, pageRequest);
+        else if (Objects.equals(theme, "All")) list = repo.findAll(spec2, pageRequest);
+        else list = repo.findAll(Specification.where(spec1).and(spec2), pageRequest);
+        return list;
     }
 
-    public Page<Video> findAll(org.springframework.data.domain.Pageable pageable) {
-        return repo.findAll(pageable);
+    public Page<Video> findPaginated(int pageNo) {
+        return repo.findAll(PageRequest.of(pageNo, 6));
     }
 
-
-    public Page<Video> findPaginatedCriteria(int pageNo, int pageSize, String sortField, String sortDirection, Specification<Video> spec) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortField).ascending() :
-                Sort.by(sortField).descending();
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-        return repo.findAll(spec, pageable);
-    }
-
-    public Page<Video> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortField).ascending() :
-                Sort.by(sortField).descending();
-        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-        return this.repo.findAll(pageable);
-    }
     public List<String> getAuthors(){
         List<Video> list = repo.findAll();
         return list.stream().map(Video::getAuthor).distinct().collect(Collectors.toList());
