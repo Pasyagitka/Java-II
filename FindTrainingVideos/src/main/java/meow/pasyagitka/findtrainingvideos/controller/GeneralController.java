@@ -36,7 +36,11 @@ public class GeneralController {
 
      @GetMapping("/getDisciplines")
      ResponseEntity<List<DisciplineDto>> all() {
-         return new ResponseEntity<>(disciplineService.listAll(), HttpStatus.OK);
+         try {
+             return new ResponseEntity<>(disciplineService.listAll(), HttpStatus.OK);
+         } catch (Exception e) {
+             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+         }
      }
 
     @GetMapping(value = {"/getUsername"})
@@ -47,7 +51,7 @@ public class GeneralController {
                 String currentUserName = authentication.getName();
                 return new ResponseEntity<>(currentUserName, HttpStatus.OK);
             }
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR); //todo userName exc
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -7,11 +7,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
-        $(document).ready(function() {
-            fetch('/adminmain/load', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        $(document).ready(async function() {
+            fetch('/adminmain/load', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
                 .then((response) => {
                     let root = document.getElementById('root');
-                    console.log(response.status);
                     if(response.status === 200) {
                         root.innerHTML = '\n' +
                             '    <nav class="navbar navbar-light bg-success justify-content-between" style="margin: 10px;">\n' +
@@ -115,18 +114,17 @@
                     else root.innerHTML = '<h1>Admin page is forbidden</h1>';
                 })
 
-             fetch('/general/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
-                 .then((response) => { return response.json();})
-                 .then(pdata => {
-                     let tr = '';
-                     pdata.forEach(value => {
-                         tr += `<option value="${value.id}">${value.name}</option>`;
-                     })
-                     document.querySelector('#disciplinesSelect').innerHTML = tr;
-                     document.querySelector('#editDisciplinesSelect').innerHTML = tr;
-                 });
+            let disciplines = await fetch('/general/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
+            if (disciplines.status === 200) {
+                let tr = '';
+                (await disciplines.json()).forEach(value => { tr += `<option value="${value.id}">${value.name}</option>`; })
+                document.querySelector('#disciplinesSelect').innerHTML = tr;
+                document.querySelector('#editDisciplinesSelect').innerHTML = tr;
+            }
+            else alert("Disciplines: " + disciplines.status + " " + (await disciplines.json()).message);
 
-            fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+
+            fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
                 .then((response) => { return response.json();})
                 .then(data => {
                     let tr = '';
@@ -150,8 +148,8 @@
                     });
                     document.querySelector('#table_id tbody:nth-child(2)').innerHTML = tr;
                     document.querySelector('#pagination').innerHTML = pages;
-                }).then().catch(error => {console.log(error);
-            });
+                })
+                .catch(error => {console.log(error)});
         });
     </script>
 </head>
@@ -159,64 +157,37 @@
 <div class="container" id="root"></div>
 <script>
     async function addVideo() {
-        let videotitle = document.getElementById("videotitle").value;
-        let videotheme = document.getElementById("videotheme").value;
-        let videoauthor = document.getElementById("videoauthor").value;
-        let videodisciplineId  = $('#disciplinesSelect option:selected').val();
-        let videourl = document.getElementById("videourl").value;
-        let videodescription = document.getElementById("videodescription").value;
-        let response = await fetch("/adminmain/addvideo",
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `${localStorage.getItem('token')}`
-                },
+        let response = await fetch("/adminmain/addvideo", { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `${localStorage.getItem('token')}`},
                 body: JSON.stringify({
-                    title: videotitle,
-                    theme: videotheme,
-                    author: videoauthor,
-                    disciplineId: videodisciplineId,
-                    url: videourl,
-                    description: videodescription
+                    title: document.getElementById("videotitle").value,
+                    theme: document.getElementById("videotheme").value,
+                    author: document.getElementById("videoauthor").value,
+                    disciplineId: $('#disciplinesSelect option:selected').val(),
+                    url: document.getElementById("videourl").value,
+                    description: document.getElementById("videodescription").value
                 })
             });
-
-        if (response.status === 200) {
-
-        } else {
-            alert(response.statusText);
-            /*document.querySelector("#result").style.color = "#e74c3c";
-            document.querySelector("#result").innerHTML = data.error;*/
-        }
+        if (response.status === 201) alert("Success ADD. Update page to display changes");
+        else alert((await response.json()).message);
     }
     async function deleteVideo(id) {
-        fetch(`adminmain/deletevideo/${id}`,  {method: 'DELETE', headers: { 'Authorization': `${localStorage.getItem('token')}`}});
+        let response = await fetch(`adminmain/deletevideo/${id}`,  {method: 'DELETE', headers: { 'Authorization': `${localStorage.getItem('token')}`}})
+        if (response.status === 200) alert("Success DELETE. Update page to display changes");
+        else alert((await response.json()).message);
     }
     async function editVideo(id) {
-        let editvideotitle = document.getElementById("editvideotitle").value;
-        let editvideotheme = document.getElementById("editvideotheme").value;
-        let editvideoauthor = document.getElementById("editvideoauthor").value;
-        let editvideodisciplineId  = $('#editDisciplinesSelect option:selected').val();
-        let editvideourl = document.getElementById("editvideourl").value;
-        let editvideodescription = document.getElementById("editvideodescription").value;
-        fetch(`adminmain/editvideo/${id}`, {
-            method: 'PUT',
-            headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `${localStorage.getItem('token')}`
-            },
+        let response = await fetch(`adminmain/editvideo/${id}`, {method: 'PUT', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `${localStorage.getItem('token')}`},
             body: JSON.stringify({
-                title: editvideotitle,
-                theme: editvideotheme,
-                disciplineId: editvideodisciplineId,
-                author: editvideoauthor,
-                url: editvideourl,
-                description: editvideodescription
+                title: document.getElementById("editvideotitle").value,
+                theme: document.getElementById("editvideotheme").value,
+                disciplineId:  $('#editDisciplinesSelect option:selected').val(),
+                author: document.getElementById("editvideoauthor").value,
+                url: document.getElementById("editvideourl").value,
+                description: document.getElementById("editvideodescription").value
             })
-        });
+        })
+        if (response.status === 200) alert("Success EDIT. Update page to display changes");
+        else alert((await response.json()).message);
     }
     async function editVideoForm(id) {
         fetch(`adminmain/getVideo/${id}`,  {method: 'GET', headers: { 'Authorization': `${localStorage.getItem('token')}`}})
@@ -231,9 +202,9 @@
                 document.getElementById("editVideoButton").href = `javascript:editVideo(${id})`;
             });
     }
-    async function setPage(page) {
+    function setPage(page) {
         fetch(`/general/getVideoList?page=${page-1}`, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
-            .then((response) => { return response.json();})
+            .then((response) => { if(response.status !== 200) alert("Error!" + response.text()); return response.json();})
             .then(data => {
                 let tr = '';
                 let pdata = data.content;
@@ -250,10 +221,7 @@
                                </tr>`;
                 });
                 document.querySelector('#table_id tbody:nth-child(2)').innerHTML = tr;
-            }).then().catch(error => {console.log(error);});
-    }
-    async function sendEmail() {
-
+            });
     }
 </script>
 </body>

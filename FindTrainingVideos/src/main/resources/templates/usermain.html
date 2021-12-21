@@ -9,32 +9,27 @@
 </head>
 <script>
     $(document).ready(function() {
-        fetch('/general/getUsername', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getUsername', {headers: { 'Authorization': `${localStorage.getItem('token')}`}})
             .then((response) => { return response.text();})
-            .then(pdata => {
-                    document.querySelector('#username').innerHTML = `Hello, ${pdata}`;
-                });
+            .then(pdata => { document.querySelector('#username').innerHTML = `Hello, ${pdata}`; });
 
-        fetch('/general/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getAuthors', {headers: { 'Authorization': `${localStorage.getItem('token')}`}})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = `<option value="All" selected="selected">All authors</option>`;
-                pdata.forEach(value => {
-                    tr += `<option value="${value}">${value}</option>`;
-                })
+                pdata.forEach(value => { tr += `<option value="${value}">${value}</option>`; })
                 document.querySelector('#filterauthor').innerHTML = tr;
             });
-        fetch('/general/getThemes', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+
+        fetch('/general/getThemes', {headers: { 'Authorization': `${localStorage.getItem('token')}`}})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let tr = `<option value="All" selected="selected">All themes</option>`;
-                pdata.forEach(value => {
-                    tr += `<option value="${value}">${value}</option>`;
-                })
+                pdata.forEach(value => { tr += `<option value="${value}">${value}</option>`; })
                 document.querySelector('#filtertheme').innerHTML = tr;
             });
 
-        fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`,  }})
+        fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}`}})
             .then((response) => { return response.json();})
             .then(data => {
                 let tr = '';
@@ -59,8 +54,8 @@
                 });
                 document.querySelector('#videoList').innerHTML = tr;
                 document.querySelector('#pagination').innerHTML = pages;
-            }).then().catch(error => {console.log(error);
-        });
+            })
+            .catch(error => {console.log(error);});
     });
 </script>
 <body>
@@ -76,7 +71,6 @@
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Sign Out"/>
         </form>
-        <!--<input type="button" class="btn btn-outline-light" value="Sign Out"/>-->
     </nav>
     <div class="row">
         <div class="col container" style="margin: 10px;">
@@ -118,31 +112,29 @@
     </div>
 </div>
 <script>
-    async function download() {
+    function download() {
         fetch('/usermain/getVideoListDownload', {headers: { 'Authorization': `${localStorage.getItem('token')}`  }})
             .then((response) => { return response.json();})
             .then(pdata => {
                 let data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pdata, null, ' '));
                 let a = document.getElementById('download');
                 a.href = 'data:' + data;
-            }).then().catch(error => {console.log(error);
-        });
+            })
+            .catch(error => {console.log(error); });
     }
-    async function filter(page){
+    function filter(page){
         let theme = document.getElementById(`filtertheme`).value;
         let author = document.getElementById(`filterauthor`).value;
-        let url = `/usermain/filterVideos?page=${page}&theme=${theme}&author=${author}`;
-        if (theme === "All" && author === "All") url =  `/general/getVideoList`;
+        let url = `/usermain/filterVideos?page=${page}&theme=${theme}&author=${author}`; //display filtered (both)
+        if (theme === "All" && author === "All") url =  `/general/getVideoList`;         //display all
         fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
             .then((response) => { return response.json();})
             .then(data => {
-                let tr = '';
-                let pages = '';
-                let pdata = data.content;
+                let tr = '', pages = '';
                 for (let i = 1; i<= data.totalPages; i++) {
                     pages += `<li class="page-item"><a class="page-link" href="javascript:setPage('filter', ${i})">${i}</a></li>`;
                 }
-                pdata.forEach(function (value) {
+                (data.content).forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
                            <video src="${value.url}" controls></video>
@@ -158,23 +150,21 @@
                 });
                 document.querySelector('#videoList').innerHTML = tr;
                 document.querySelector('#pagination').innerHTML = pages;
-            }).then().catch(error => {console.log(error);
-        });
+            })
+            .catch(error => {console.log(error);});
     }
-    async function search(page) {
+    function search(page) {
         let search = document.getElementById("search-input").value;
-        let url = (search.length === 0) ? `/general/getVideoList?page=${page}` : `/usermain/searchVideos/${search}?page=${page}`;
+        let url = (search.length === 0) ? `/general/getVideoList?page=${page}` //display all if search bar is empty
+            : `/usermain/searchVideos/${search}?page=${page}`;
         fetch(url, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
             .then((response) => { return response.json();})
             .then(data => {
-                let tr = '';
-                let pages ='';
-                pdata = data.content;
-                console.log(pdata);
+                let tr = '', pages ='';
                 for (let i = 1; i<= data.totalPages; i++) {
                     pages += `<li class="page-item"><a class="page-link" href="javascript:setPage('search', ${i})">${i}</a></li>`;
                 }
-                pdata.forEach(function (value) {
+                (data.content).forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
                            <video src="${value.url}" controls></video>
@@ -190,18 +180,20 @@
                 });
                 document.querySelector('#videoList').innerHTML = tr;
                 document.querySelector('#pagination').innerHTML = pages;
-            }).then().catch(error => {console.log(error);
-        });
+            })
+            .catch(error => {console.log(error);});
     }
-    async function setPage(criteria, page) {
+    function setPage(criteria, page) {
         if (criteria === 'filter') {filter(page-1); return;}
         if (criteria === 'search') {search(page-1); return;}
+        getVideoList(page);
+    }
+    function getVideoList(page) {
         fetch(`/general/getVideoList?page=${page-1}`, {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
             .then((response) => { return response.json();})
             .then(data => {
                 let tr = '';
-                let pdata = data.content;
-                pdata.forEach(function (value) {
+                (data.content).forEach(function (value) {
                     tr += `
                      <div class="card" style="width: 18rem; margin: 20px">
                            <video src="${value.url}" controls></video>
@@ -216,7 +208,8 @@
                        </div>`;
                 });
                 document.querySelector('#videoList').innerHTML = tr;
-            }).then().catch(error => {console.log(error);});
+            })
+            .catch(error => {console.log(error);});
     }
 </script>
 </body>

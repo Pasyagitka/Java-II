@@ -31,6 +31,12 @@ public class LogAspect {
 
 
 
+    @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.*(..))")
+    public void callAtAdminController() {}
+    @After("callAtAdminController()")
+    public void afterCallAdmin(JoinPoint jp) { logger.info("after " + jp.getSignature());}
+
+
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.getVideos(..))")
     public void callAtAdminControllerGetVideos() {}
     @After("callAtAdminControllerGetVideos()")

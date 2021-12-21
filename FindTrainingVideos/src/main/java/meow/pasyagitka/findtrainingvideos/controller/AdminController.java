@@ -62,7 +62,7 @@ public class AdminController {
         try {
             return ResponseEntity.ok(videoService.get(id));
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR); //todo to exception
         }
     }
 
@@ -89,7 +89,7 @@ public class AdminController {
             }
             return new ResponseEntity<>(v, HttpStatus.CREATED);
         } catch (Exception e) {
-            throw new AddVideoException("/adminmain/addvideo");
+            throw new AddVideoException("/adminmain/addvideo error!");
         }
     }
 
