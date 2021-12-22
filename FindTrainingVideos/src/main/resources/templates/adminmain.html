@@ -6,26 +6,40 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Suwannaphum">
+    <style>
+        .bg-custom-1 {
+            background: #6ac1de;
+        }
+        .bg-custom-2 {
+            background-image: linear-gradient(15deg, #4450c2 0%, #6ac1de 100%);
+        }
+        body{
+            font-family: 'Suwannaphum', serif;
+            background-image: url("https://catherineasquithgallery.com/uploads/posts/2021-02/1612760284_87-p-fon-goluboi-nezhnii-s-razvodami-147.jpg");
+            background-size: cover;
+        }
+    </style>
     <script>
-        $(document).ready(async function() {
+        $(document).ready(function() {
             fetch('/adminmain/load', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
                 .then((response) => {
                     let root = document.getElementById('root');
                     if(response.status === 200) {
                         root.innerHTML = '\n' +
-                            '    <nav class="navbar navbar-light bg-success justify-content-between" style="margin: 10px;">\n' +
-                            '        <a class="navbar-brand text-light" href="#">\n' +
+                            '    <nav class="navbar navbar-light bg-success justify-content-between bg-custom-2" style="margin: 10px;">\n' +
+                            '        <a class="navbar-brand text-light">\n' +
                             '            <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">\n' +
                             '            Training Videos - Admin\n' +
                             '        </a>\n' +
-                            '        <a class="navbar-brand text-light" th:href="@{/usermain}">\n' +
+                            '        <a class="navbar-brand text-light" href="/usermain">\n' +
                             '            Go to user`s view\n' +
                             '        </a>\n' +
                             '    </nav>\n' +
                             '    <div class="row">\n' +
                             '        <div class="col-4 container">\n' +
-                            '            <h3 style="padding: 10px;">Add a video</h3>\n' +
-                            '            <div class="col rounded bg-light" style=" padding: 10px;">\n' +
+                            '            <h2 style="padding: 10px; color: white;">Add or edit a video</h2>\n' +
+                            '            <div class="col rounded bg-light" style=" padding: 10px; margin:0 0 10px 0">\n' +
                             '                <div class="form-group">\n' +
                             '                    <label for="videotitle">Title</label>\n' +
                             '                    <input type="text" name="videotitle" id="videotitle" class="form-control">\n' +
@@ -38,10 +52,13 @@
                             '                    <label for="videoauthor">Author</label>\n' +
                             '                    <input type="text" name="videoauthor" id="videoauthor" class="form-control">\n' +
                             '                </div>\n' +
-                            '                <div class="dropdown">\n' +
-                            '                    <select class="form-select" aria-label="Discipline" id ="disciplinesSelect" >\n' +
-                            '                        <option selected>Select discipline</option>\n' +
-                            '                    </select>\n' +
+                            '                <div class="form-group">\n' +
+                            '                    <label for="disciplinesSelect">Discipline</label>\n' +
+                            '                   <div class="dropdown">\n' +
+                            '                       <select class="form-select" aria-label="Discipline" id ="disciplinesSelect" >\n' +
+                            '                           <option selected>Select discipline</option>\n' +
+                            '                       </select>\n' +
+                            '                   </div>\n' +
                             '                </div>\n' +
                             '                <div class="form-group">\n' +
                             '                    <label for="videourl">URL</label>\n' +
@@ -51,48 +68,19 @@
                             '                    <label for="videodescription">Description</label>\n' +
                             '                    <input type="text" name="videodescription" id="videodescription" class="form-control">\n' +
                             '                </div>\n' +
-                            '                <input type="submit" value="Add" class="btn btn-success" onclick="addVideo()"/>\n' +
+                            '                <input type="submit" value="Add" class="btn btn-dark bg-custom-1" onclick="addVideo()"/>\n' +
+                            '                 <a id="editVideoButton" class="btn btn-dark bg-custom-1">Edit</a>\n' +
                             '            </div>\n' +
-                            '        </div>\n' +
-                            '        <div class="col-4 container">\n' +
-                            '            <h3 style="padding: 10px;">Edit a video</h3>\n' +
-                            '            <div class="col rounded bg-light" style=" padding: 10px;">\n' +
-                            '                <div class="form-group">\n' +
-                            '                    <label for="editvideotitle">Title</label>\n' +
-                            '                    <input type="text" name="editvideotitle" id="editvideotitle" class="form-control">\n' +
-                            '                </div>\n' +
-                            '                <div class="form-group">\n' +
-                            '                    <label for="editvideotheme">Theme</label>\n' +
-                            '                    <input type="text" name="editvideotheme" id="editvideotheme" class="form-control">\n' +
-                            '                </div>\n' +
-                            '                <div class="form-group">\n' +
-                            '                    <label for="editvideoauthor">Author</label>\n' +
-                            '                    <input type="text" name="editvideoauthor" id="editvideoauthor" class="form-control">\n' +
-                            '                </div>\n' +
-                            '                <div class="dropdown">\n' +
-                            '                    <select class="form-select" aria-label="Discipline" id ="editDisciplinesSelect" >\n' +
-                            '                        <option selected>Select discipline</option>\n' +
-                            '                    </select>\n' +
-                            '                </div>\n' +
-                            '                <div class="form-group">\n' +
-                            '                    <label for="editvideourl">URL</label>\n' +
-                            '                    <input type="text" name="editvideourl" id="editvideourl" class="form-control">\n' +
-                            '                </div>\n' +
-                            '                <div class="form-group">\n' +
-                            '                    <label for="editvideodescription">Description</label>\n' +
-                            '                    <input type="text" name="editvideodescription" id="editvideodescription" class="form-control">\n' +
-                            '                </div>\n' +
-                            '                <a id="editVideoButton" class="btn btn-success">Edit</a>\n' +
-                            '            </div>\n' +
+                            '           <div class="col container bg-white rounded text-danger font-weight-bold" id="errorOutput" style="margin: 10; width: 500px"></div>' +
                             '        </div>\n' +
                             '        <div class="col container" width="600">\n' +
-                            '            <h3 style="padding: 10px;">List</h3>\n' +
+                            '            <h2 style="padding: 10px; color: white;">List</h2>\n' +
                             '            <nav aria-label="Pages">\n' +
                             '                <ul class="pagination" id="pagination">\n' +
                             '                    <li class="page-item"><a class="page-link" href="#">1</a></li>\n' +
                             '                </ul>\n' +
                             '            </nav>\n' +
-                            '            <table class="table" id="table_id">\n' +
+                            '            <table class="table rounded" id="table_id" style="background: white">\n' +
                             '                <tbody>\n' +
                             '                <tr class="bg-light">\n' +
                             '                    <th>Title</th>\n' +
@@ -114,14 +102,12 @@
                     else root.innerHTML = '<h1>Admin page is forbidden</h1>';
                 })
 
-            let disciplines = await fetch('/general/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
-            if (disciplines.status === 200) {
-                let tr = '';
-                (await disciplines.json()).forEach(value => { tr += `<option value="${value.id}">${value.name}</option>`; })
-                document.querySelector('#disciplinesSelect').innerHTML = tr;
-                document.querySelector('#editDisciplinesSelect').innerHTML = tr;
-            }
-            else alert("Disciplines: " + disciplines.status + " " + (await disciplines.json()).message);
+            fetch('/general/getDisciplines', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
+                .then((response) => { return response.json();})
+                .then(data => {
+                    let tr = '';
+                    data.forEach(value => { tr += `<option value="${value.id}">${value.name}</option>`;document.querySelector('#disciplinesSelect').innerHTML = tr;
+                })});
 
 
             fetch('/general/getVideoList', {headers: { 'Authorization': `${localStorage.getItem('token')}` }})
@@ -154,7 +140,7 @@
     </script>
 </head>
 <body>
-<div class="container" id="root"></div>
+<div class="container" id="root" style="max-width: 1550px;"></div>
 <script>
     async function addVideo() {
         let response = await fetch("/adminmain/addvideo", { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `${localStorage.getItem('token')}`},
@@ -167,8 +153,16 @@
                     description: document.getElementById("videodescription").value
                 })
             });
-        if (response.status === 201) alert("Success ADD. Update page to display changes");
-        else alert((await response.json()).message);
+        if (response.status === 201) {
+            document.querySelector('#errorOutput').innerHTML = '';
+            alert("Success ADD. Update page to display changes");
+        }
+        else {
+            let tr = '';
+            let pdata = (await response.json()).errors;
+            pdata.forEach(function (value) {tr += value + '<br>'; });
+            document.querySelector('#errorOutput').innerHTML = tr;
+        }
     }
     async function deleteVideo(id) {
         let response = await fetch(`adminmain/deletevideo/${id}`,  {method: 'DELETE', headers: { 'Authorization': `${localStorage.getItem('token')}`}})
@@ -178,27 +172,36 @@
     async function editVideo(id) {
         let response = await fetch(`adminmain/editvideo/${id}`, {method: 'PUT', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'Authorization': `${localStorage.getItem('token')}`},
             body: JSON.stringify({
-                title: document.getElementById("editvideotitle").value,
-                theme: document.getElementById("editvideotheme").value,
-                disciplineId:  $('#editDisciplinesSelect option:selected').val(),
-                author: document.getElementById("editvideoauthor").value,
-                url: document.getElementById("editvideourl").value,
-                description: document.getElementById("editvideodescription").value
+                title: document.getElementById("videotitle").value,
+                theme: document.getElementById("videotheme").value,
+                author: document.getElementById("videoauthor").value,
+                disciplineId: $('#disciplinesSelect option:selected').val(),
+                url: document.getElementById("videourl").value,
+                description: document.getElementById("videodescription").value
             })
         })
-        if (response.status === 200) alert("Success EDIT. Update page to display changes");
-        else alert((await response.json()).message);
+        if (response.status === 200) {
+            document.querySelector('#errorOutput').innerHTML = '';
+            alert("Success EDIT. Update page to display changes");
+        }
+        else {
+            let tr = '';
+            let pdata = (await response.json()).errors;
+            pdata.forEach(function (value) {tr += value + '<br>'; });
+            document.querySelector('#errorOutput').innerHTML = tr;
+        }
     }
     async function editVideoForm(id) {
         fetch(`adminmain/getVideo/${id}`,  {method: 'GET', headers: { 'Authorization': `${localStorage.getItem('token')}`}})
             .then((response) => { return response.json();})
             .then(data => {
-                document.getElementById("editvideotitle").value = data.title;
-                document.getElementById("editvideotheme").value = data.theme;
-                document.getElementById("editvideoauthor").value = data.author;
-                document.getElementById("editDisciplinesSelect").value = data.disciplineEntity.id;
-                document.getElementById("editvideourl").value = data.url;
-                document.getElementById("editvideodescription").value = data.description;
+                document.querySelector('#errorOutput').innerHTML = '';
+                document.getElementById("videotitle").value = data.title;
+                document.getElementById("videotheme").value = data.theme;
+                document.getElementById("videoauthor").value = data.author;
+                document.getElementById("disciplinesSelect").value = data.disciplineEntity.id;
+                document.getElementById("videourl").value = data.url;
+                document.getElementById("videodescription").value = data.description;
                 document.getElementById("editVideoButton").href = `javascript:editVideo(${id})`;
             });
     }

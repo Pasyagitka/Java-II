@@ -38,14 +38,14 @@ public class VideoService {
     }
 
     public Page<Video> listAllCriteria(int pageNo, String criteria) {
-        PageRequest pageRequest = PageRequest.of(pageNo, 6);
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("id").descending());
         VideoSpecification spec = new VideoSpecification(new SearchDto("title", ":", criteria));
         VideoSpecification spec2 = new VideoSpecification(new SearchDto("theme", ":", criteria));
         return (Page<Video>)repo.findAll(Specification.where(spec).or(spec2), pageRequest);
     }
 
     public Page<Video> filterVideos(int pageNo, String theme, String author) {
-        PageRequest pageRequest = PageRequest.of(pageNo, 6);
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("id").descending());
         VideoSpecification spec1 = new VideoSpecification(new SearchDto("theme", ":", theme));
         VideoSpecification spec2 = new VideoSpecification(new SearchDto("author", ":", author));
         Page<Video> list;
@@ -56,7 +56,7 @@ public class VideoService {
     }
 
     public Page<Video> findPaginated(int pageNo) {
-        return repo.findAll(PageRequest.of(pageNo, 6));
+        return repo.findAll(PageRequest.of(pageNo, 6, Sort.by("id").descending()));
     }
 
     public List<String> getAuthors(){

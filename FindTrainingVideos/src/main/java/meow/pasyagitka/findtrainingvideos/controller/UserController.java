@@ -14,14 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RequestMapping(value = "/usermain")
+@RestController
 public class UserController {
     @Autowired
     private VideoService videoService;
@@ -31,7 +30,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
-    @GetMapping(value = {"/usermain/getVideoListDownload"})
+    @GetMapping(value = {"/getVideoListDownload"})
     public ResponseEntity<List<VideoDto>> getVideosDownload() {
         try {
             return new ResponseEntity<>(videoService.listAll(), HttpStatus.OK);
@@ -45,7 +44,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
-    @GetMapping(value = {"/usermain/searchVideos/{title}"})
+    @GetMapping(value = {"/searchVideos/{title}"})
     public ResponseEntity<Page<Video>> searchVideos(
             @RequestParam("page") Optional<Integer> page,
             @Parameter(description = "title of video to be found")
@@ -61,7 +60,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
             @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
-    @GetMapping(value = {"/usermain/filterVideos"})
+    @GetMapping(value = {"/filterVideos"})
     public ResponseEntity<Page<Video>> filterVideos(
             @RequestParam("page") Optional<Integer> page,
             @Parameter(description = "theme of video to be filtered")

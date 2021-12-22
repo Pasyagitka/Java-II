@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -88,8 +89,9 @@ public class AdminController {
                 emailService.send(email, "from TrainingVideos", String.format("There is a new video on TrainingVideos: %s. Check this out!", v.getTitle()));
             }
             return new ResponseEntity<>(v, HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new AddVideoException("/adminmain/addvideo error!");
+        }
+        catch (Exception e) {
+            throw new AddVideoException("/adminmain/addvideo" + e.getMessage());
         }
     }
 

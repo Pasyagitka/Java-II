@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Suwannaphum">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<style>
+  body{
+    font-family: 'Suwannaphum', serif;
+    background-image: url("https://catherineasquithgallery.com/uploads/posts/2021-02/1612760284_87-p-fon-goluboi-nezhnii-s-razvodami-147.jpg");
+    background-size: cover;
+  }
+</style>
 </head>
 <body>
-<div class="container col-4 bg-light rounded" style="padding: 10px;">
-  <h1>Sign Up</h1>
+<div class="container align-items-center d-flex" style="padding: 10px; height:600px;">
+<div class="container col-4 bg-light rounded" style="padding: 10px; width: 500px">
+  <h1 style="text-align: center">Sign Up</h1>
   <div class="form-group" style="margin: 10px;">
     <div>
       <div class="form-group">
@@ -18,24 +27,33 @@
         <label for="password">Password</label>
         <input type="password" name="password" id="password" class="form-control">
       </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" name="email" id="email" class="form-control">
+      </div>
       <a th:href="@{/login}"><small class="text-muted">Already have an account? Sign in.</small></a></br>
-      <input type="submit" class="btn btn-success" value="Sign Up" onclick="register()"/></br>
+      <input type="submit" class="btn btn-primary" value="Sign Up" onclick="register()"/></br>
+      <div style="color:red" id="errorOutput"></div>
     </div>
+  </div>
   </div>
 </div>
   <script>
     async function register() {
       let login = document.getElementById("login").value;
       let password = document.getElementById("password").value;
-      fetch("/register", { method: 'POST',  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ login: login, password: password }) })
-      .then((response) => {
-        if (response.status === 200) {
-            document.location.href = "/login";
-          } else {
-            document.querySelector("#result").style.color = "#e74c3c";
-            document.querySelector("#result").innerHTML = 'error';
-        }
-      });
+      let email = document.getElementById("email").value;
+      let response = await fetch("/register", { method: 'POST',  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ login: login, password: password, email: email }) })
+      if (response.status === 200) {
+          document.location.href = "/login";
+      }
+      else {
+          let tr = '';
+          let pdata = (await response.json());
+          let errors =  pdata.errors;
+          errors.forEach(function (value) {tr += value + '<br>'; });
+          document.querySelector("#errorOutput").innerHTML = tr;
+      }
     }
   </script>
 </body>

@@ -1,21 +1,21 @@
 package meow.pasyagitka.findtrainingvideos.controller.advice;
 
 public class Response {
-    private String message;
+    private String errors;
 
     public Response() {
     }
 
-    public Response(String message) {
-        this.message = message;
+    public Response(String errors) {
+        this.errors = errors;
     }
 
-    public String getMessage() {
-        return message;
+    public String getErrors() {
+        return errors;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrors(String errors) {
+        this.errors = errors;
     }
 
 }

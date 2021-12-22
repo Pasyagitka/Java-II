@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Usermain - Training Videos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Suwannaphum">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        .bg-custom-1 {
+            background: #6ac1de;
+        }
+        .bg-custom-2 {
+            background-image: linear-gradient(15deg, #4450c2 0%, #6ac1de 100%);
+        }
+        body {
+            font-family: 'Suwannaphum', serif;
+            background-image: url("https://catherineasquithgallery.com/uploads/posts/2021-02/1612760284_87-p-fon-goluboi-nezhnii-s-razvodami-147.jpg");
+            background-size: cover;
+        }
+    </style>
 </head>
 <script>
     $(document).ready(function() {
@@ -59,8 +73,8 @@
     });
 </script>
 <body>
-<div class="container">
-    <nav class="navbar navbar-light text-light bg-success justify-content-between" style="margin: 10px;">
+<div class="container" style="max-width: 1550px">
+    <nav class="navbar navbar-light text-light justify-content-between bg-custom-2" style="margin: 10px;">
         <a class="navbar-brand text-light" href="#">
             <img src="https://img.icons8.com/material-two-tone/24/000000/video.png" width="30" height="30" class="d-inline-block align-top" alt="">
             Training Videos
@@ -69,44 +83,44 @@
         <a class="navbar-brand text-light" id="adminpage">
         </a>
         <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
+            <input type="submit" class="btn btn-light" value="Sign Out"/>
         </form>
     </nav>
-    <div class="row">
-        <div class="col container" style="margin: 10px;">
-            <div class="row">
-                <div class="col-10">
-                    <input type="text" id="search-input" placeholder="Search by title or theme" class="form-control">
+    <div class="col">
+        <div class="container bg-white rounded" style="padding: 20px">
+            <div class="col container"  style="margin: 10px;">
+                <div class="row">
+                    <div class="col-11">
+                        <input type="text" id="search-input" placeholder="Search by title or theme" class="form-control">
+                    </div>
+                    <div class="col-1">
+                        <input type="button" class="btn btn-outline-primary" value="Search" onclick="search(0)"/>
+                    </div>
                 </div>
-                <div class="col-1">
-                    <input type="button" class="btn btn-outline-success" value="Search" onclick="search(0)"/>
+            </div>
+            <div class="container" style="margin: 10px;">
+                <div class="btn-group">
+                    <select class="form-select custom-select" aria-label="Discipline" id="filtertheme" onmouseup="filter(0)">
+                        <option selected>Theme</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <select class="form-select custom-select" aria-label="Discipline" id="filterauthor" onmouseup="filter(0)">
+                        <option selected>Author</option>
+                    </select>
                 </div>
             </div>
-        </div>
-        <div class="container" style="margin: 10px;">
-            <h3 style="padding: 10px;">Filter</h3>
-            <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filtertheme" onmouseup="filter(0)">
-                    <option selected>Theme</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <select class="form-select" aria-label="Discipline" id="filterauthor" onmouseup="filter(0)">
-                    <option selected>Author</option>
-                </select>
+            <div class="container" style="margin: 10px;">
+                <input type="button" onclick="download()" class="btn btn-outline-primary" value="Get download url"/>
+                <a id="download" download="Videos.json">Download video list</a>
             </div>
         </div>
-        <div class="container">
-            <a id="download" download="Videos.json">Download video list</a>
-            <button onclick="download()">Get download url</button>
-        </div>
-        <h3 style="align-self: center">List</h3><br>
-        <nav aria-label="Pages">
-            <ul class="pagination" id="pagination">
+        <nav aria-label="Pages" class="content-center" style="margin: 10px">
+            <ul class="pagination justify-content-center" id="pagination" >
                 <li class="page-item"><a class="page-link" href="#">1</a></li>
             </ul>
         </nav>
-        <div id = "videoList"  class="container d-flex flex-wrap-reverse justify-content-center" style="padding: 10px; flex-direction: row-reverse;">
+        <div id = "videoList"  class="container d-flex flex-wrap justify-content-center bg-white rounded" style="padding: 10px; flex-direction: row-reverse; margin-bottom: 10px">
             <!-- https://codingyaar.com/bootstrap-video-card/ -->
         </div>
     </div>

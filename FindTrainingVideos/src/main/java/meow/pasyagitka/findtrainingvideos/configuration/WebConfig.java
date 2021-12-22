@@ -52,7 +52,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     //validation
-    /*@Bean
+    @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:validation");
@@ -64,5 +64,5 @@ public class WebConfig implements WebMvcConfigurer {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
-    }*/
+    }
 }

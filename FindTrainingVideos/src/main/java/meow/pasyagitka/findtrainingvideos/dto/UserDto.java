@@ -3,10 +3,12 @@ package meow.pasyagitka.findtrainingvideos.dto;
 import lombok.Data;
 import meow.pasyagitka.findtrainingvideos.model.Role;
 import meow.pasyagitka.findtrainingvideos.validator.Password;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.validation.constraints.Size;
 
 @Data
+@PropertySource("classpath:validation.properties")
 public class UserDto {
     private Integer id;
 

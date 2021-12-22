@@ -84,4 +84,9 @@ public class UserService implements UserDetailsService{
         var list = userRepository.findAll();
         return list.stream().map(User::getEmail).distinct().collect(Collectors.toList());
     }
+
+    public UserDto getByLogin(String login){
+        Optional<User> userOptional = userRepository.findByLogin(login);
+        return userOptional.map(user -> map(user, UserDto.class)).orElse(null);
+    }
 }
