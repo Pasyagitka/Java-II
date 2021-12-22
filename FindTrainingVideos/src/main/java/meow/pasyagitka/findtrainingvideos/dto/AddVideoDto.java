@@ -28,4 +28,13 @@ public class AddVideoDto {
     @Size(max=250, message = "Max length of Description field is 250")
     @NotBlank(message = "Description is mandatory")
     private String description;
+
+    public AddVideoDto(String title, String theme, int disciplineId, String author, String url, String description) {
+        this.title = title;
+        this.theme = theme;
+        this.disciplineId = disciplineId;
+        this.author = author;
+        this.url = url;
+        this.description = description;
+    }
 }
