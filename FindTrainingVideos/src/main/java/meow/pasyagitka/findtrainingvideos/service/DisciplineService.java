@@ -15,8 +15,11 @@ import static meow.pasyagitka.findtrainingvideos.utils.Mapper.mapAll;
 @Service
 @Transactional
 public class DisciplineService {
-    @Autowired
-    DisciplineRepository repo;
+    final DisciplineRepository repo;
+
+    public DisciplineService(DisciplineRepository repo) {
+        this.repo = repo;
+    }
 
     public void save(DisciplineDto dto) {
         repo.save(map(dto, Discipline.class));

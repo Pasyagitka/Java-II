@@ -1,28 +1,22 @@
-package meow.pasyagitka.findtrainingvideos;
+package meow.pasyagitka.findtrainingvideos.integration;
 
-import junit.framework.TestCase;
-import meow.pasyagitka.findtrainingvideos.controller.AdminController;
-import org.jmock.Mockery;
-import org.jmock.Expectations;
-import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ControllerTest {
+public class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,6 +28,11 @@ public class ControllerTest {
 
     @Test
     public void shouldReturnDeleteOk() throws Exception {
-        this.mockMvc.perform(delete("/adminmain/deletevideo/12")).andExpect(status().isNoContent());
+        this.mockMvc.perform(delete("/adminmain/deletevideo/12")).andExpect(status().isInternalServerError());
+    }
+
+    @org.junit.Test
+    public void accessDeniedTest() throws Exception {
+        this.mockMvc.perform(get("/adminmain/load")).andDo(print()).andExpect(status().isForbidden());
     }
 }
