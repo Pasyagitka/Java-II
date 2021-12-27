@@ -14,47 +14,74 @@ public class LogAspect {
     Logger logger=Logger.getLogger(LogAspect.class);
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.GeneralController.*(..))")
-    public void callAtDisciplineController() {}
-    @Before("callAtDisciplineController()")
-    public void beforeCallDiscipline(JoinPoint jp) {logger.info("before " + jp.getSignature());}
-    @After("callAtDisciplineController()")
-    public void afterCallDiscipline(JoinPoint jp) {
-        logger.info("after " + jp.getSignature());
+    public void callAtGeneralController() {}
+    @Before("callAtGeneralController()")
+    public void beforeCallGeneral(JoinPoint jp) {logger.info("Trying to access: " + jp.getSignature());}
+    @AfterReturning("callAtGeneralController()")
+    public void afterReturningCallGeneral(JoinPoint jp) {
+        logger.info("Success: " + jp.getSignature());
     }
+    @AfterThrowing("callAtGeneralController()")
+    public void afterThrowingCallGeneral(JoinPoint jp) {
+        logger.info("Error " + jp.getSignature());
+    }
+
 
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.UserController.*(..))")
     public void callAtUserController() {}
-    @After("callAtUserController()")
-    public void afterCallUser(JoinPoint jp) { logger.info("after " + jp.getSignature());}
+    @Before("callAtUserController()")
+    public void beforeCallUser(JoinPoint jp) { logger.info("Trying to access: " + jp.getSignature());}
+    @AfterReturning("callAtUserController()")
+    public void afterReturningCallUser(JoinPoint jp) { logger.info("Success: " + jp.getSignature());}
+    @AfterThrowing("callAtUserController()")
+    public void afterThrowingCallUser(JoinPoint jp) { logger.info("Error: " + jp.getSignature());}
 
 
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.*(..))")
     public void callAtAdminController() {}
-    @After("callAtAdminController()")
-    public void afterCallAdmin(JoinPoint jp) { logger.info("after " + jp.getSignature());}
+    @Before("callAtAdminController()")
+    public void beforeCallAdmin(JoinPoint jp) { logger.info("Trying to access: " + jp.getSignature());}
+    @AfterReturning("callAtAdminController()")
+    public void afterReturningCallAdmin(JoinPoint jp) { logger.info("Success: " + jp.getSignature());}
+    @AfterThrowing("callAtAdminController()")
+    public void afterThrowingCallAdmin(JoinPoint jp) { logger.info("Error: " + jp.getSignature());}
 
 
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.saveVideo(..))")
     public void callAtAdminControllerSaveVideo() {}
     @Before("callAtAdminControllerSaveVideo()")
-    public void beforeCallSaveVideo(JoinPoint jp)  {logger.info("Trying to add a video..." +  jp.getSignature());}
+    public void beforeCallSaveVideo(JoinPoint jp)  {logger.info("Trying to add a video...");}
     @After("callAtAdminControllerSaveVideo()")
-    public void afterCallSaveVideo(JoinPoint jp)  {logger.info("Video is added: " +  jp.getSignature());}
+    public void afterCallSaveVideo(JoinPoint jp)  {logger.info("Video is added.");}
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.updateVideo(..))")
     public void callAtAdminControllerUpdateVideo() {}
     @Before("callAtAdminControllerUpdateVideo()")
-    public void beforeCallUpdateVideo(JoinPoint jp)  {logger.info("Trying to edit a video...");}//todo id
+    public void beforeCallUpdateVideo(JoinPoint jp)  {logger.info("Trying to edit a video...");}
     @After("callAtAdminControllerUpdateVideo()")
-    public void afterCallUpdateVideo(JoinPoint jp)  {logger.info("Video is edited");}
+    public void afterCallUpdateVideo(JoinPoint jp)  {logger.info("Video is edited.");}
 
     @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AdminController.deleteVideo(..))")
     public void callAtAdminControllerDeleteVideo() {}
     @Before("callAtAdminControllerDeleteVideo()")
-    public void beforeCallDeleteVideo(JoinPoint jp)  {logger.info("Trying to delete a video..." +  jp.getSignature());}
+    public void beforeCallDeleteVideo(JoinPoint jp)  {logger.info("Trying to delete a video...");}
     @After("callAtAdminControllerDeleteVideo()")
-    public void afterCallDeleteVideo(JoinPoint jp)  {logger.info("Video is deleted: " +  jp.getSignature());}
+    public void afterCallDeleteVideo(JoinPoint jp)  {logger.info("Video is deleted.");}
+
+    @Pointcut("execution(public * meow.pasyagitka.findtrainingvideos.controller.AuthController.*(..))")
+    public void callAtAuthController() {}
+    @Before("callAtAuthController()")
+    public void beforeCallAuth(JoinPoint jp) {logger.info("Trying to access: " + jp.getSignature());}
+    @AfterReturning("callAtAuthController()")
+    public void afterReturningCallAuth(JoinPoint jp) {
+        logger.info("Success: " + jp.getSignature());
+    }
+    @AfterThrowing("callAtAuthController()")
+    public void afterThrowingCallAuth(JoinPoint jp) {
+        logger.info("Error " + jp.getSignature());
+    }
+
 }

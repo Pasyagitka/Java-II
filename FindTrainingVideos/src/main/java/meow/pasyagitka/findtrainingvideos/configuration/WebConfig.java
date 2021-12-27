@@ -15,7 +15,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 @Configuration
-@EnableWebMvc
+@EnableWebMvc //imports the Spring MVC configuration
 public class WebConfig implements WebMvcConfigurer {
     @Bean
     public ClassLoaderTemplateResolver templateResolver() {

@@ -23,45 +23,45 @@ public class GlobalRestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCannotAddVideoException(UserNotFoundException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(VideoNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleUserNotFoundException(VideoNotFoundException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AddVideoException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCannotAddVideoException(AddVideoException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EditVideoException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCannotEditVideoException(EditVideoException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DeleteVideoException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCannotDeleteVideoException(DeleteVideoException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RegisterException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleCannotCreateAccountException(RegisterException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
-        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(createExceptionError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     public Map<String, Object> createExceptionError(String message){

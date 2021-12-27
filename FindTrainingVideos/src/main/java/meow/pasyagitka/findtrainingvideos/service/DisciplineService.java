@@ -21,23 +21,13 @@ public class DisciplineService {
         this.repo = repo;
     }
 
-    public void save(DisciplineDto dto) {
-        repo.save(map(dto, Discipline.class));
-    }
-
     public List<DisciplineDto> listAll() {
         return mapAll((List<Discipline>)repo.findAll(), DisciplineDto.class);
     }
 
-   /* public DisciplineDto get(int id) {
-        return map(repo.findById(id).get(), DisciplineDto.class);
-    }*/
-     public Discipline get(int id) {
+    public Discipline get(int id) {
         return repo.findById(id).get();
     }
 
-    public void delete(int id) {
-        repo.deleteById(id);
-    }
 }
 

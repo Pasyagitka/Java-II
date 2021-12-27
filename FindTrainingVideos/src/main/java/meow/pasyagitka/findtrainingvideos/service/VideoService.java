@@ -71,7 +71,7 @@ public class VideoService {
     public VideoDto get(int id) {
         Optional<Video> optionalVideoDto = repo.findById(id);
         return optionalVideoDto.map(video -> map(video, VideoDto.class)).orElse(null);
-    }//if present return object, otherwise null
+    }
 
     public void delete(int id) {
         repo.deleteById(id);

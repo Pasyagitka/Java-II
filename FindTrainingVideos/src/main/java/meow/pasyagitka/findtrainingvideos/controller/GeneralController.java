@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import meow.pasyagitka.findtrainingvideos.dto.DisciplineDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
+import meow.pasyagitka.findtrainingvideos.exceptions.CannotGetDataException;
 import meow.pasyagitka.findtrainingvideos.model.Video;
 import meow.pasyagitka.findtrainingvideos.service.DisciplineService;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
@@ -34,66 +35,73 @@ public class GeneralController {
     @Autowired
     private VideoService videoService;
 
-     @GetMapping("/getDisciplines")
-     ResponseEntity<List<DisciplineDto>> all() {
+    @Operation(summary = "Get all disciplines")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Disciplines list is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while displaying discipline list", content = @Content)})
+    @GetMapping("/getDisciplines")
+    ResponseEntity<List<DisciplineDto>> all() throws CannotGetDataException {
          try {
              return new ResponseEntity<>(disciplineService.listAll(), HttpStatus.OK);
          } catch (Exception e) {
-             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+             throw new CannotGetDataException("getDisciplines: ");
          }
-     }
+    }
 
+    @Operation(summary = "Get current user`s name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Username is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while getting current user`s name", content = @Content)})
     @GetMapping(value = {"/getUsername"})
-    public ResponseEntity<String> getUsername() {
+    public ResponseEntity<String> getUsername() throws CannotGetDataException{
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
                 String currentUserName = authentication.getName();
                 return new ResponseEntity<>(currentUserName, HttpStatus.OK);
             }
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CannotGetDataException("getUsername: ");
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+           throw e;
         }
     }
-
 
     @Operation(summary = "Gets list of all authors")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authors list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
-            @ApiResponse(responseCode = "500", description = "Error while returning authors list", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Error while returning authors list", content = @Content)})
     @GetMapping(value = {"/getAuthors"})
-    public ResponseEntity<List<String>> getAuthors() {
+    public ResponseEntity<List<String>> getAuthors() throws CannotGetDataException{
         try {
             return new ResponseEntity<>(videoService.getAuthors(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CannotGetDataException("getAuthors: ");
         }
     }
 
     @Operation(summary = "Gets list of all themes")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Theme list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
-            @ApiResponse(responseCode = "500", description = "Error while returning theme list", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Error while returning theme list", content = @Content)})
     @GetMapping(value = {"/getThemes"})
-    public ResponseEntity<List<String>> getThemes() {
+    public ResponseEntity<List<String>> getThemes() throws CannotGetDataException{
         try {
             return new ResponseEntity<>(videoService.getThemes(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CannotGetDataException("getThemes: ");
         }
     }
 
     @Operation(summary = "Gets list of all videos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Video list is present", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class))}),
-            @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
+            @ApiResponse(responseCode = "400", description = "Error while returning video list", content = @Content)})
     @GetMapping(value = {"/getVideoList"})
-    public ResponseEntity<Page<Video>> getVideosPaginated(@RequestParam("page") Optional<Integer> page) {
+    public ResponseEntity<Page<Video>> getVideosPaginated(@RequestParam("page") Optional<Integer> page) throws CannotGetDataException{
         try {
             return new ResponseEntity<>(videoService.findPaginated(page.orElse(0)), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CannotGetDataException("getVideos (paginated): ");
         }
     }
 }

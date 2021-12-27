@@ -42,18 +42,9 @@ public class UserService implements UserDetailsService{
         return userRepository.save(userEntity);
     }
 
-
-    public List<UserDto> listAll() {
-        return mapAll((List<User>) userRepository.findAll(), UserDto.class);
-    }
-
     public UserDto get(int id) {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.map(user -> map(user, UserDto.class)).orElse(null);
-    }
-
-    public void delete(int id) {
-        userRepository.deleteById(id);
     }
 
     public UserDto findByLogin(String login) {

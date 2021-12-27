@@ -11,13 +11,6 @@ import java.util.List;
 
 @Configuration
 public class OpenAPIConfig {
-   /* @Bean*/
-    /*public GroupedOpenApi publicUserApi() {
-        return GroupedOpenApi.builder()
-                .group("Users")
-                .pathsToMatch("/users/**")
-                .build();
-    }*/
 
     @Bean
     public OpenAPI customOpenApi() {

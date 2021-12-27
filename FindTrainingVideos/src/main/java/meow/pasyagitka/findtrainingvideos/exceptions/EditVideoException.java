@@ -3,7 +3,7 @@ package meow.pasyagitka.findtrainingvideos.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class EditVideoException extends Exception {
 
     public EditVideoException(String path) {

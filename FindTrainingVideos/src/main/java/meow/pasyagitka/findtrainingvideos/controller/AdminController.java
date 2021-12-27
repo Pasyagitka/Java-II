@@ -8,25 +8,20 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import meow.pasyagitka.findtrainingvideos.dto.AddVideoDto;
 import meow.pasyagitka.findtrainingvideos.dto.VideoDto;
-import meow.pasyagitka.findtrainingvideos.exceptions.*;
-import meow.pasyagitka.findtrainingvideos.model.Video;
+import meow.pasyagitka.findtrainingvideos.exceptions.AddVideoException;
+import meow.pasyagitka.findtrainingvideos.exceptions.DeleteVideoException;
+import meow.pasyagitka.findtrainingvideos.exceptions.EditVideoException;
+import meow.pasyagitka.findtrainingvideos.exceptions.VideoNotFoundException;
 import meow.pasyagitka.findtrainingvideos.service.DisciplineService;
 import meow.pasyagitka.findtrainingvideos.service.EmailService;
 import meow.pasyagitka.findtrainingvideos.service.UserService;
 import meow.pasyagitka.findtrainingvideos.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RequestMapping(value = "/adminmain")
 @RestController
@@ -43,39 +38,29 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
-
-
-    /*  @Operation(summary = "Gets list of all videos")
+    @Operation(summary = "Returns a video")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Video list is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
-            @ApiResponse(responseCode = "500", description = "Error while returning video list", content = @Content)})
-    @GetMapping(value = {"/getVideoList"})
-    public ResponseEntity<Page<Video>> getVideosPaginated(@RequestParam("page") Optional<Integer> page) {
-        try {
-            return new ResponseEntity<Page<Video>>(videoService.findPaginated(page.orElse(0)), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-*/
+            @ApiResponse(responseCode = "200", description = "Video is present", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while returning a video", content = @Content)})
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = {"/getVideo/{id}"})
-    public ResponseEntity<VideoDto> getVideo(@PathVariable("id") int id) {
+    public ResponseEntity<VideoDto> getVideo(@PathVariable("id") int id) throws VideoNotFoundException {
         try {
             return ResponseEntity.ok(videoService.get(id));
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR); //todo to exception
+            throw new VideoNotFoundException("/getvideo: videos not found");
         }
     }
 
     @Operation(summary = "Adds a new video")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "New video is created", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
-            @ApiResponse(responseCode = "500", description = "Error while creating a new video", content = @Content)})
+            @ApiResponse(responseCode = "201", description = "New video is created", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AddVideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while creating a new video", content = @Content)})
     @PostMapping("/addvideo")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<VideoDto> saveVideo(
             @Parameter(description = "New video object")
-            @Valid @RequestBody AddVideoDto addVideoDto) throws AddVideoException { //todo VideoDto
+            @Valid @RequestBody AddVideoDto addVideoDto) throws AddVideoException {
         try {
             VideoDto newVideo = new VideoDto();
             newVideo.setTitle(addVideoDto.getTitle());
@@ -97,13 +82,12 @@ public class AdminController {
 
     @Operation(summary = "Updates a video by its id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "The video is edited", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
-            @ApiResponse(responseCode = "404", description = "Video not found", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error while editing a video", content = @Content)})
+            @ApiResponse(responseCode = "200", description = "The video is edited", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = AddVideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while editing a video", content = @Content)})
     @PutMapping(value = "/editvideo/{id}")
     public ResponseEntity<VideoDto> updateVideo(
             @PathVariable("id") int id,
-            @RequestBody @Valid AddVideoDto newVideoData) throws EditVideoException {
+            @RequestBody @Valid AddVideoDto newVideoData) throws EditVideoException, VideoNotFoundException {
         try {
             VideoDto videoData = videoService.get(id);
 
@@ -118,6 +102,9 @@ public class AdminController {
             }
             throw new VideoNotFoundException("/adminmain/editvideo/{id}");
         }
+        catch (VideoNotFoundException e) {
+            throw e;
+        }
         catch (Exception e) {
             throw new EditVideoException("/adminmain/editvideo/{id}");
         }
@@ -125,20 +112,31 @@ public class AdminController {
 
     @Operation(summary = "Deletes a video by its id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Video is deleted", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
-            @ApiResponse(responseCode = "500", description = "Error while deleting a video", content = @Content)})
+            @ApiResponse(responseCode = "200", description = "Video is deleted", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VideoDto.class)) }),
+            @ApiResponse(responseCode = "400", description = "Error while deleting a video", content = @Content)})
     @DeleteMapping("/deletevideo/{id}")
     public ResponseEntity<HttpStatus> deleteVideo(
             @Parameter(description = "id of video to be deleted")
-            @PathVariable("id") int id) throws DeleteVideoException {
+            @PathVariable("id") int id) throws DeleteVideoException, VideoNotFoundException {
         try {
-            videoService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
+            VideoDto videoData = videoService.get(id);
+            if (videoData != null) {
+                videoService.delete(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            throw new VideoNotFoundException("/adminmain/deletevideo/{id}");
+        }
+        catch (VideoNotFoundException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new DeleteVideoException("/adminmain/deletevideo/{id}");
         }
     }
 
+    @Operation(summary = "Load admin`s page")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Video is deleted", content = { @Content(mediaType = "application/json") })})
     @GetMapping("/load")
     public ResponseEntity<HttpStatus> load(){
         return new ResponseEntity<>(HttpStatus.OK);
