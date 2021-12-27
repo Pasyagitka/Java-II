@@ -1,1 +1,1 @@
-Java Spring Project: Сервис поиска обучающих видео-роликов.
+Java Spring Project: Сервис поиска видео-роликов.
